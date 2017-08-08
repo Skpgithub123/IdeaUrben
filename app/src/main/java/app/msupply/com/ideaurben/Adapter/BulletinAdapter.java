@@ -36,7 +36,7 @@ import app.msupply.com.ideaurben.Commonclass.Report_BeanClass;
 import app.msupply.com.ideaurben.Commonclass.Report_BulletinPojoClass;
 import app.msupply.com.ideaurben.MainActivity;
 import app.msupply.com.ideaurben.R;
-import au.com.bytecode.opencsv.CSVReader;
+
 
 /**
  * Created by uOhmac Technologies on 08-Aug-17.
@@ -130,7 +130,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
                 if(holder.txt_filetype.getText().toString().equals("pdf")) {
                     viewPdf(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
                 }else if(holder.txt_filetype.getText().toString().equals("csv")){
-                    viewcsvfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
+                    //viewcsvfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
                 }
             }
         });
@@ -159,7 +159,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
     }
 
 
-    private void viewcsvfile(String file, String directory){
+   /* private void viewcsvfile(String file, String directory){
         File csvFile = new File(Environment.getExternalStorageDirectory() + "/Download/Reports/" + file);
         Uri path = Uri.fromFile(csvFile);
         ArrayList<String> categoryList = new ArrayList<String>();
@@ -185,7 +185,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     class Download_file extends AsyncTask<String,Integer,String>{
         int length;
