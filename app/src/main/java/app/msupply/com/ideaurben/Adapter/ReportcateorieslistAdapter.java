@@ -29,7 +29,7 @@ public class ReportcateorieslistAdapter extends RecyclerView.Adapter<Reportcateo
     ArrayList<Report_TypeBeanclass> arrayList = new ArrayList<>();
 
     Context context;
-
+   // CardView lltypes_imagadapter;
     public ReportcateorieslistAdapter(Context context, ArrayList<Report_TypeBeanclass> arrayList)
     {
 
@@ -89,7 +89,7 @@ public class ReportcateorieslistAdapter extends RecyclerView.Adapter<Reportcateo
 
         public TextView tt_id,tt_tittle;
 
-        CardView lltypes_imagadapter;
+
 
 
         public MyViewHolder(View itemView) {
@@ -98,9 +98,9 @@ public class ReportcateorieslistAdapter extends RecyclerView.Adapter<Reportcateo
             tt_id = (TextView) itemView.findViewById(R.id.tv_idoftypes);
             tt_tittle = (TextView) itemView.findViewById(R.id.typesofreports);
 
-            lltypes_imagadapter  = (CardView) itemView.findViewById(R.id.lltypes_imagadapter);
-            lltypes_imagadapter.setOnClickListener(this);
+           // lltypes_imagadapter  = (CardView) itemView.findViewById(R.id.lltypes_imagadapter);
 
+            tt_tittle.setOnClickListener(this);
         }
 
         @Override
@@ -109,7 +109,7 @@ public class ReportcateorieslistAdapter extends RecyclerView.Adapter<Reportcateo
 
             switch (view.getId())
             {
-                case R.id.lltypes_imagadapter:
+                case R.id.typesofreports:
                 {
 
 

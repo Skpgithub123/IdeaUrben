@@ -74,7 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
     RecyclerView recyclerView;
 
     Context context;
-    Document document = new Document();
+    Document document;
     ConnectionDetector connectionDetector;
 
     CommonMethods commonMethods;
@@ -86,16 +86,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
     File myNewFolder= null;
     ProgressDialog mProgressDialog;
+
+    String filetypes_store="";
+
     File dir=null;
 
     String authkey ="";
+    String roll_type ="";
 
-    public MyAdapter(Context context,ArrayList<Report_BeanClass> arrayList,String authkey) {
+    public MyAdapter(Context context,ArrayList<Report_BeanClass> arrayList,String authkey,String roll_type) {
 
         Log.d("sizeofarray","****  "+arrayList.size());
         this.arrayList = arrayList;
          this.context = context;
         this.authkey = authkey;
+        this.roll_type = roll_type;
     }
 
     @Override
@@ -146,8 +151,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                     getDate_Filter="";
                     getDate_Filter = arrayList.get(position).getDate();
 
-                    fetch_Pdfformat();
+                    Log.d("fetchfiles","***  "+Integer.parseInt(Report_Here.fieldtype));
 
+                    if (roll_type.equals("4") ||roll_type.equals("2") || roll_type.equals("3")) {
+
+                        if (Integer.parseInt(Report_Here.fieldtype) == 3) {
+                            fetch_Pdfformat_3rd("3");
+                        } else if (Integer.parseInt(Report_Here.fieldtype) == 1) {
+                            fetch_Pdfformat_1streport("1");
+                        } else if (Integer.parseInt(Report_Here.fieldtype) == 2) {
+
+                            fetch_Pdfformat_2ndreports("2");
+                        }else if (Integer.parseInt(Report_Here.fieldtype) == 4)
+                        {
+                            fetch_Pdfformat_4th("4");
+                        }
+                    }
 
                 }else
                 {
@@ -164,7 +183,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(context,"pease open file",Toast.LENGTH_LONG).show();
+              Toast.makeText(context,"pease open file",Toast.LENGTH_LONG).show();
+                getDate_Filter="";
+                getDate_Filter = arrayList.get(position).getDate();
+
+                Toast.makeText(context,"pease open file"+getDate_Filter,Toast.LENGTH_LONG).show();
+
+                File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + Report_Here.fieldtype+""+getDate_Filter+".pdf");
+
+                if (pdfFile.exists())
+                {
+                    viewPdf(Report_Here.fieldtype+""+getDate_Filter+".pdf", "Dir");
+
+                }
+                else
+                {
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","File Not Yet Downloaded Please Download File..");
+                }
 
             }
         });
@@ -334,13 +370,422 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
 
 
-    public  void fetch_Pdfformat() {
+    public void fetch_Pdfformat_1streport(String filetypes)
+    {
 
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setMessage("Please Wait....");
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.show();
+        document = new Document();
+        filetypes_store = filetypes;
 
+        Retrofit adapter_retro = new Retrofit.Builder()
+                .baseUrl(Constandapi.ROOT_URL)
+                .build();
+
+        IdeaInterface getreport_1st = adapter_retro.create(IdeaInterface.class);
+
+        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(authkey, roll_type,filetypes);
+
+
+        responce_distributore_report.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful())
+                {
+                    mProgressDialog.dismiss();
+                    try {
+
+                        String result = response.body().string();
+
+
+                        Log.d("files1st_reports","***   "+result);
+
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        File dir = new File(path);
+
+                        if (!dir.exists())
+                            dir.mkdirs();
+
+                        File file = new File(dir, filetypes_store+""+getDate_Filter+".pdf");
+                        FileOutputStream fOut = new FileOutputStream(file);
+
+                        PdfPTable tables = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+
+                        PdfPTable tables_two = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+                        PdfPTable tables_three = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+
+                        PdfPTable tables_foure = new PdfPTable(new float[] {10, 10, 10, 10, 10,10});
+
+                        tables.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_two.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_two.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_three.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_three.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_foure.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_foure.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+
+                        tables.addCell("ID");
+                        tables.addCell("Demo_number");
+                        tables.addCell("Circle_name");
+                        tables.addCell("Phase_name");
+                        tables.addCell("Rollout_type");
+                        tables.addCell("Device_serial_number");
+                        tables.addCell("Device_description");
+
+                        tables_two.addCell("Deployed_by");
+                        tables_two.addCell("Deployeddatetime");
+                        tables_two.addCell("Jan_actv");
+                        tables_two.addCell("Feb_actv");
+                        tables_two.addCell("Mar_actv");
+                        tables_two.addCell("Apr_actv");
+                        tables_two.addCell("May_actv");
+
+                        tables_three.addCell("June_actv");
+                        tables_three.addCell("July_actv");
+                        tables_three.addCell("August_actv");
+                        tables_three.addCell("September_actv");
+                        tables_three.addCell("Octomber_actv");
+                        tables_three.addCell("November_actv");
+                        tables_three.addCell("December_actv");
+
+                        tables_foure.addCell("Distno");
+                        tables_foure.addCell("Dist_name");
+                        tables_foure.addCell("Zone");
+                        tables_foure.addCell("Asm_name");
+                        tables_foure.addCell("Officer_name");
+                        tables_foure.addCell("Created_date");
+
+                        tables.setHeaderRows(1);
+
+                        tables_two.setHeaderRows(1);
+
+                        tables_three.setHeaderRows(1);
+                        tables_foure.setHeaderRows(1);
+
+                        PdfPCell[] cells = tables.getRow(0).getCells();
+                        PdfPCell[] cellstwo = tables_two.getRow(0).getCells();
+                        PdfPCell[] cellsthree = tables_three.getRow(0).getCells();
+                        PdfPCell[] cellsfoure = tables_foure.getRow(0).getCells();
+
+
+                        for (int j=0;j<cells.length;j++){
+                            cells[j].setBackgroundColor(BaseColor.GRAY);
+                            cellstwo[j].setBackgroundColor(BaseColor.GRAY);
+                            cellsthree[j].setBackgroundColor(BaseColor.GRAY);
+
+                        }
+
+                        for (int j=0;j<cellsfoure.length;j++)
+                        {
+                            cellsfoure[j].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+                        JSONArray jsonArray = new JSONArray(result);
+
+                        for (int i = 0 ;i<jsonArray.length();i++)
+                        {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (getDate_Filter.equals(jsonObject.getString("created_date"))) {
+                                tables.addCell(jsonObject.getString("id"));
+                                tables.addCell(jsonObject.getString("demo_number"));
+                                tables.addCell(jsonObject.getString("circle_name"));
+                                tables.addCell(jsonObject.getString("phase_name"));
+                                tables.addCell(jsonObject.getString("rollout_type"));
+                                tables.addCell(jsonObject.getString("device_serial_number"));
+                                tables.addCell(jsonObject.getString("device_description"));
+
+                                tables_two.addCell(jsonObject.getString("deployed_by"));
+                                tables_two.addCell(jsonObject.getString("deployeddatetime"));
+                                tables_two.addCell(jsonObject.getString("deployeddatetime"));
+                                tables_two.addCell(jsonObject.getString("feb_actv"));
+                                tables_two.addCell(jsonObject.getString("mar_actv"));
+                                tables_two.addCell(jsonObject.getString("apr_actv"));
+                                tables_two.addCell(jsonObject.getString("may_actv"));
+
+
+                                tables_three.addCell(jsonObject.getString("june_actv"));
+                                tables_three.addCell(jsonObject.getString("july_actv"));
+                                tables_three.addCell(jsonObject.getString("august_actv"));
+                                tables_three.addCell(jsonObject.getString("september_actv"));
+                                tables_three.addCell(jsonObject.getString("octomber_actv"));
+                                tables_three.addCell(jsonObject.getString("november_actv"));
+                                tables_three.addCell(jsonObject.getString("december_actv"));
+
+
+                                tables_foure.addCell(jsonObject.getString("distno"));
+                                tables_foure.addCell(jsonObject.getString("dist_name"));
+                                tables_foure.addCell(jsonObject.getString("zone"));
+                                tables_foure.addCell(jsonObject.getString("asm_name"));
+                                tables_foure.addCell(jsonObject.getString("officer_name"));
+                                tables_foure.addCell(jsonObject.getString("created_date"));
+                            }
+                        }
+                        PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                        document.open();
+
+
+                        tables.setSpacingAfter(20f);
+
+                        tables_two.setSpacingAfter(20f);
+                        tables_three.setSpacingAfter(20f);
+                        tables_foure.setSpacingAfter(20f);
+
+
+                        document.add(tables);
+                        document.add(tables_two);
+                        document.add(tables_three);
+                        document.add(tables_foure);
+
+                        //  document.addCreationDate();
+                        document.close();
+
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (DocumentException e) {
+                        e.printStackTrace();
+                    }
+
+                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+
+                mProgressDialog.dismiss();
+                commonMethods = new CommonMethods(context);
+                commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
+
+
+            }
+        });
+
+
+
+
+    }
+
+
+    public void fetch_Pdfformat_2ndreports(String filetypes)
+    {
+
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Please Wait....");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+        document = new Document();
+        filetypes_store = filetypes;
+
+        Retrofit adapter_retro = new Retrofit.Builder()
+                .baseUrl(Constandapi.ROOT_URL)
+                .build();
+
+        IdeaInterface getreport_1st = adapter_retro.create(IdeaInterface.class);
+
+        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(authkey, roll_type,filetypes);
+
+
+        responce_distributore_report.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful())
+                {
+                    mProgressDialog.dismiss();
+                    try {
+
+                        String  result = response.body().string();
+
+                        Log.d("resultof2ndreports","****   "+result);
+
+
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        File dir = new File(path);
+
+                        if (!dir.exists())
+                            dir.mkdirs();
+
+                        File file = new File(dir, filetypes_store+""+getDate_Filter+".pdf");
+                        FileOutputStream fOut = new FileOutputStream(file);
+
+
+                        //document.open();
+                        PdfPTable tables = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+
+                        PdfPTable tables_two = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10,10});
+                        PdfPTable tables_three = new PdfPTable(new float[] {10, 10, 10, 10, 10,10});
+
+                        tables.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_two.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_two.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_three.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_three.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables.addCell("ID");
+                        tables.addCell("Scd_code");
+                        tables.addCell("Zone");
+                        tables.addCell("Distributor_name");
+                        tables.addCell("Distributor_no");
+                        tables.addCell("Asm_name");
+                        tables.addCell("Officer_name");
+
+                        tables_two.addCell("type");
+                        tables_two.addCell("total_uao_ot");
+                        tables_two.addCell("ekyc_uao_ot");
+                        tables_two.addCell("ekyc_ot");
+                        tables_two.addCell("ekyc_y");
+                        tables_two.addCell("ekyc_n");
+                        tables_two.addCell("total_321");
+                        tables_two.addCell("ekyc");
+
+                        tables_three.addCell("slab");
+                        tables_three.addCell("outstation_customer");
+                        tables_three.addCell("outstation_cust_on_321");
+                        tables_three.addCell("rv_count");
+                        tables_three.addCell("created_date");
+                        tables_three.addCell("added_by");
+
+
+
+                        tables.setHeaderRows(1);
+                        tables_two.setHeaderRows(1);
+                        tables_three.setHeaderRows(1);
+
+                        PdfPCell[] cells = tables.getRow(0).getCells();
+                        PdfPCell[] cellstwo = tables_two.getRow(0).getCells();
+                        PdfPCell[] cellsthree = tables_three.getRow(0).getCells();
+
+                        for (int j=0;j<cells.length;j++){
+                            cells[j].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+                        for (int j =0;j<cellstwo.length;j++)
+                        {
+                            cellstwo[j].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+                        for (int j =0;j<cellsthree.length;j++)
+                        {
+                            cellsthree[j].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+
+                        JSONArray jsonArray = new JSONArray(result);
+
+                        for (int i =0;i<jsonArray.length();i++)
+                        {
+
+
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            if (getDate_Filter.equals(jsonObject.getString("created_date")))
+                            {
+
+
+                                tables.addCell(jsonObject.getString("id"));
+                                tables.addCell(jsonObject.getString("scd_code"));
+                                tables.addCell(jsonObject.getString("zone"));
+                                tables.addCell(jsonObject.getString("distributor_name"));
+                                tables.addCell(jsonObject.getString("distributor_no"));
+                                tables.addCell(jsonObject.getString("asm_name"));
+                                tables.addCell(jsonObject.getString("officer_name"));
+
+                                tables_two.addCell(jsonObject.getString("type"));
+                                tables_two.addCell(jsonObject.getString("total_uao_ot"));
+                                tables_two.addCell(jsonObject.getString("ekyc_uao_ot"));
+                                tables_two.addCell(jsonObject.getString("ekyc_ot"));
+                                tables_two.addCell(jsonObject.getString("ekyc_y"));
+                                tables_two.addCell(jsonObject.getString("ekyc_n"));
+                                tables_two.addCell(jsonObject.getString("total_321"));
+                                tables_two.addCell(jsonObject.getString("ekyc"));
+
+
+                                tables_three.addCell(jsonObject.getString("slab"));
+                                tables_three.addCell(jsonObject.getString("outstation_customer"));
+                                tables_three.addCell(jsonObject.getString("outstation_cust_on_321"));
+                                tables_three.addCell(jsonObject.getString("rv_count"));
+                                tables_three.addCell(jsonObject.getString("created_date"));
+                                tables_three.addCell(jsonObject.getString("added_by"));
+
+
+
+
+
+                            }
+
+                            PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                            document.open();
+
+
+                            tables.setSpacingAfter(20f);
+
+                            tables_two.setSpacingAfter(20f);
+                            tables_three.setSpacingAfter(20f);
+
+                            document.add(tables);
+                            document.add(tables_two);
+                            document.add(tables_three);
+
+                            //  document.addCreationDate();
+                            document.close();
+                        }
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (DocumentException e) {
+                        e.printStackTrace();
+                    }
+                    mProgressDialog.dismiss();
+                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                mProgressDialog.dismiss();
+                Log.d("result2ndreports","***  "+call.toString());
+                commonMethods =new CommonMethods(context);
+                commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
+
+            }
+        });
+
+    }
+
+    public  void fetch_Pdfformat_3rd(String filedtypes) {
+
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Please Wait....");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.show();
+        document = new Document();
+
+        filetypes_store = filedtypes;
 
         Retrofit adapter_retro = new Retrofit.Builder()
                 .baseUrl(Constandapi.ROOT_URL)
@@ -350,7 +795,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
         Log.d("authkeyvalue", "*******    " + authkey);
 
-        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, "4", Report_Here.fieldtype);
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filedtypes);
 
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
@@ -374,7 +819,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         if (!dir.exists())
                             dir.mkdirs();
 
-                        File file = new File(dir, "newFile.pdf");
+                        File file = new File(dir, filetypes_store+""+getDate_Filter+".pdf");
                         FileOutputStream fOut = new FileOutputStream(file);
 
 
@@ -389,18 +834,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
 
 
-                        PdfPTable tables_six  = new PdfPTable(new float[] {10, 10, 10, 10, 10, 10});
+                        PdfPTable tables_six  = new PdfPTable(new float[] {10, 10, 10, 10, 10, 10,10});
+
+                        PdfPTable tables_seven  = new PdfPTable(new float[] {10, 10, 10, 10, 10, 10,10});
+
+                        PdfPTable tables_eight = new PdfPTable(new float[] {10, 10, 10, 10});
 
                       //  float[] columnWidths = new float[]{10f, 20f, 30f, 10f};
                       //  tables.setWidths(15);
 
                       //  tables.setTotalWidth(width);
                        // tables.setLockedWidth(true);
+
+                        tables_eight.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_eight.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_seven.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_seven.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
                       tables.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
                       tables.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 
                       tables_two.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-                      tables.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        tables_two.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 
                         tables_three.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
                         tables_three.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -441,13 +897,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         tables_five.addCell("Day 15");
                         tables_five.addCell("Day 16");
                         tables_five.addCell("Day 17");
+
                         tables_six.addCell("Day 18");
                         tables_six.addCell("Day 19");
                         tables_six.addCell("Day 20");
-                        tables_six.addCell("Grand_total");
-                        tables_six.addCell("Added_by");
-                        tables_six.addCell("Status");
+                        tables_six.addCell("Day 21");
+                        tables_six.addCell("Day 22");
+                        tables_six.addCell("Day 23");
+                        tables_six.addCell("Day 24");
 
+                        tables_seven.addCell("Day 25");
+                        tables_seven.addCell("Day 26");
+                        tables_seven.addCell("Day 27");
+                        tables_seven.addCell("Day 28");
+                        tables_seven.addCell("Day 29");
+                        tables_seven.addCell("Day 30");
+                        tables_seven.addCell("Day 31");
+
+
+                        tables_eight.addCell("Grand_total");
+                        tables_eight.addCell("Added_by");
+                        tables_eight.addCell("Status");
+                        tables_eight.addCell("Created_date");
+
+                        tables_eight.setHeaderRows(1);
 
                         tables.setHeaderRows(1);
 
@@ -457,6 +930,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         tables_foure.setHeaderRows(1);
                         tables_five.setHeaderRows(1);
                         tables_six.setHeaderRows(1);
+                        tables_seven.setHeaderRows(1);
+                        tables_eight.setHeaderRows(1);
 
 
                         PdfPCell[] cells = tables.getRow(0).getCells();
@@ -466,21 +941,40 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         PdfPCell[] cellsfive = tables_five.getRow(0).getCells();
                         PdfPCell[] cellssix = tables_six.getRow(0).getCells();
 
+                        PdfPCell[] cellsseven = tables_seven.getRow(0).getCells();
+
+                        PdfPCell[] cellseight = tables_eight.getRow(0).getCells();
+
+                        for (int i =0;i<cellseight.length;i++)
+                        {
+                            cellseight[i].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+                        for (int i =0;i<cellsseven.length;i++)
+                        {
+                            cellsseven[i].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+
+                        for (int i = 0;i<cellsseven.length;i++)
+                        {
+                            cellsseven[i].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+                        for (int i = 0;i<cellssix.length;i++)
+                        {
+                            cellssix[i].setBackgroundColor(BaseColor.GRAY);
+                        }
+
                         for (int j=0;j<cells.length;j++){
                             cells[j].setBackgroundColor(BaseColor.GRAY);
                             cellstwo[j].setBackgroundColor(BaseColor.GRAY);
                             cellsthree[j].setBackgroundColor(BaseColor.GRAY);
                             cellsfoure[j].setBackgroundColor(BaseColor.GRAY);
                             cellsfive[j].setBackgroundColor(BaseColor.GRAY);
-                            cellssix[j].setBackgroundColor(BaseColor.GRAY);
+                          //  cellssix[j].setBackgroundColor(BaseColor.GRAY);
 
                         }
-
-
-
-
-
-
 
 
                         /*document.add(tables);
@@ -523,6 +1017,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         document.addCreationDate();*/
 
                       //  PdfPTable table = null;
+
                         JSONArray jsonarray = new JSONArray(result_distriputor);
 
                         for (int i = 0; i < jsonarray.length(); i++) {
@@ -531,50 +1026,67 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
                             //PdfPCell myCell = new PdfPCell(new Paragraph(""));
                           //  table = new PdfPTable(i+1);
-                            tables.addCell(obj.getString("zone"));
-                            tables.addCell(obj.getString("scd_code"));
-                            tables.addCell(obj.getString("asm_name"));
-                            tables.addCell(obj.getString("tsm_tse_name"));
-                            tables.addCell(obj.getString("tsm_tse_type"));
-                            tables_two.addCell(obj.getString("distributorname"));
-                            tables_two.addCell(obj.getString("dist_msisdn"));
-                            tables_two.addCell(obj.getString("se_msisdn"));
-                            tables_two.addCell(obj.getString("july_1st"));
-                            tables_two.addCell(obj.getString("july_2nd"));
-                            tables_three.addCell(obj.getString("july_3rd"));
-                            tables_three.addCell(obj.getString("july_4th"));
-                            tables_three.addCell(obj.getString("july_5th"));
-                            tables_three.addCell(obj.getString("july_6th"));
-                            tables_three.addCell(obj.getString("july_7th"));
-                            tables_foure.addCell(obj.getString("july_8th"));
-                            tables_foure.addCell(obj.getString("july_9th"));
-                            tables_foure.addCell(obj.getString("july_10th"));
-                            tables_foure.addCell(obj.getString("july_11th"));
-                            tables_foure.addCell(obj.getString("july_12th"));
-                            tables_five.addCell(obj.getString("july_13th"));
-                            tables_five.addCell(obj.getString("july_14th"));
-                            tables_five.addCell(obj.getString("july_15th"));
-                            tables_five.addCell(obj.getString("july_16th"));
-                            tables_five.addCell(obj.getString("july_17th"));
-                            tables_six.addCell(obj.getString("july_18th"));
-                            tables_six.addCell(obj.getString("july_19th"));
-                            tables_six.addCell(obj.getString("july_20th"));
-                            tables_six.addCell(obj.getString("grand_total"));
-                            tables_six.addCell(obj.getString("added_by"));
-                            tables_six.addCell(obj.getString("status"));
+
+                            if (getDate_Filter.equals(obj.getString("created_date"))) {
+                                tables.addCell(obj.getString("zone"));
+                                tables.addCell(obj.getString("scd_code"));
+                                tables.addCell(obj.getString("asm_name"));
+                                tables.addCell(obj.getString("tsm_tse_name"));
+                                tables.addCell(obj.getString("tsm_tse_type"));
+                                tables_two.addCell(obj.getString("distributorname"));
+                                tables_two.addCell(obj.getString("dist_msisdn"));
+                                tables_two.addCell(obj.getString("se_msisdn"));
+                                tables_two.addCell(obj.getString("july_1st"));
+                                tables_two.addCell(obj.getString("july_2nd"));
+                                tables_three.addCell(obj.getString("july_3rd"));
+                                tables_three.addCell(obj.getString("july_4th"));
+                                tables_three.addCell(obj.getString("july_5th"));
+                                tables_three.addCell(obj.getString("july_6th"));
+                                tables_three.addCell(obj.getString("july_7th"));
+                                tables_foure.addCell(obj.getString("july_8th"));
+                                tables_foure.addCell(obj.getString("july_9th"));
+                                tables_foure.addCell(obj.getString("july_10th"));
+                                tables_foure.addCell(obj.getString("july_11th"));
+                                tables_foure.addCell(obj.getString("july_12th"));
+                                tables_five.addCell(obj.getString("july_13th"));
+                                tables_five.addCell(obj.getString("july_14th"));
+                                tables_five.addCell(obj.getString("july_15th"));
+                                tables_five.addCell(obj.getString("july_16th"));
+                                tables_five.addCell(obj.getString("july_17th"));
+                                tables_six.addCell(obj.getString("july_18th"));
+                                tables_six.addCell(obj.getString("july_19th"));
+                                tables_six.addCell(obj.getString("july_20th"));
+
+                                tables_six.addCell(obj.getString("july_21st"));
+                                tables_six.addCell(obj.getString("july_22nd"));
+                                tables_six.addCell(obj.getString("july_23rd"));
+                                tables_six.addCell(obj.getString("july_24th"));
 
 
-                           
+                                tables_seven.addCell(obj.getString("july_25th"));
+                                tables_seven.addCell(obj.getString("july_26th"));
+                                tables_seven.addCell(obj.getString("july_27th"));
+                                tables_seven.addCell(obj.getString("july_28th"));
+                                tables_seven.addCell(obj.getString("july_29th"));
+                                tables_seven.addCell(obj.getString("july_30th"));
+                                tables_seven.addCell(obj.getString("july_31st"));
 
+
+                                tables_eight.addCell(obj.getString("grand_total"));
+                                tables_eight.addCell(obj.getString("added_by"));
+                                tables_eight.addCell(obj.getString("status"));
+                                tables_eight.addCell(obj.getString("created_date"));
+
+
+                            }
 
                         }
-
-
 
                         PdfWriter writer =  PdfWriter.getInstance(document, fOut);
                         document.open();
 
-                    /*    tables.setTotalWidth(PageSize.A4.getWidth());
+
+                       /* tables.setTotalWidth(PageSize.A4.getWidth());
                         tables.setLockedWidth(true);
                         PdfContentByte canvas = writer.getDirectContent();
                         PdfTemplate template = canvas.createTemplate(
@@ -585,6 +1097,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         img.setAbsolutePosition(
                                 0, (PageSize.A4.getHeight() - tables.getTotalHeight()) / 2);*/
 
+
                         tables.setSpacingAfter(20f);
 
                         tables_two.setSpacingAfter(20f);
@@ -592,6 +1105,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         tables_foure.setSpacingAfter(20f);
                         tables_five.setSpacingAfter(20f);
                         tables_six.setSpacingAfter(20f);
+                        tables_seven.setSpacingAfter(20f);
+                        tables_eight.setSpacingAfter(20f);
 
                         document.add(tables);
                         document.add(tables_two);
@@ -599,6 +1114,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         document.add(tables_foure);
                         document.add(tables_five);
                         document.add(tables_six);
+                        document.add(tables_seven);
+                        document.add(tables_eight);
+
                       //  document.addCreationDate();
                         document.close();
 
@@ -611,7 +1129,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                     }/* finally {
 
                     }*/
-                    viewPdf("newFile.pdf", "Dir");
+                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
 
 
                 }
@@ -622,15 +1140,84 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 mProgressDialog.dismiss();
+
+                Log.d("failureresponce","***   "+call.toString());
+
+                commonMethods = new CommonMethods(context);
+                commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
+
             }
         });
 
     }
 
+    public void fetch_Pdfformat_4th(String filetype)
+    {
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Please Wait");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
+
+        filetypes_store = filetype;
+
+        Retrofit adapter_retro = new Retrofit.Builder()
+                .baseUrl(Constandapi.ROOT_URL)
+                .build();
+
+        IdeaInterface getreport = adapter_retro.create(IdeaInterface.class);
+
+        Log.d("authkeyvalue", "*******    " + authkey);
+
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filetype);
+
+
+        responce_distributore_report.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful())
+                {
+                    try {
+
+                        String results_4threport = response.body().string();
+
+                        Log.d("results_4threport","***   "+results_4threport.toString());
+
+
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+
+
+
+            }
+        });
+
+
+
+
+
+    }
+
     private void viewPdf(String file, String directory) {
 
-        File pdfFile = new File(Environment.getExternalStorageDirectory() + "/" + directory + "/" + file);
+        File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + file);
+
+        Log.d("pdffilelocation","****    "+pdfFile);
+
         Uri path = Uri.fromFile(pdfFile);
+
 
         // Setting the intent for pdf reader
         Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
@@ -646,19 +1233,4 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

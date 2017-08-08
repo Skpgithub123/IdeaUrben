@@ -59,6 +59,7 @@ public class Report_Here extends AppCompatActivity {
 
     ArrayList<String> arrayList_removedate = new ArrayList<>();
     public  static  String fieldtype="";
+    public  static String field_ID="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +80,7 @@ public class Report_Here extends AppCompatActivity {
         Bundle b = intent.getExtras();
 
          fieldtype = b.getString("passid");
+
 
         Log.d("fieldtypes","****   "+fieldtype);
 
@@ -104,44 +106,7 @@ public class Report_Here extends AppCompatActivity {
 
 
 
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
 
-            @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-                final int position = viewHolder.getAdapterPosition(); //get position which is swipe
-
-                if (direction == ItemTouchHelper.LEFT) {    //if swipe left
-
-                    Log.d("itemtouched","****   ");
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Report_Here.this); //alert for confirm to delete
-                    builder.setMessage("Are you sure to delete?");    //set message
-
-                    builder.setPositiveButton("REMOVE", new DialogInterface.OnClickListener() { //when click on DELETE
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            adapter.notifyItemRemoved(position);    //item removed from recylcerview
-                            //  sqldatabase.execSQL("delete from " + TABLE_NAME + " where _id='" + (position + 1) + "'"); //query for delete
-                            arrayList.remove(position);  //then remove item
-
-                            return;
-                        }
-                    }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {  //not removing items if cancel is done
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            adapter.notifyItemRemoved(position + 1);    //notifies the RecyclerView Adapter that data in adapter has been removed at a particular position.
-                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());   //notifies the RecyclerView Adapter that positions of element in adapter has been changed from position(removed element index to end of list), please update it.
-                            return;
-                        }
-                    }).show();  //show alert dialog
-                }
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView); //set swipe to recylcerview
 
     }
 
@@ -211,7 +176,7 @@ public class Report_Here extends AppCompatActivity {
 
                         Log.d("arraylistobjects","*****    "+arrayList_obj.size());
 
-                        adapter = new MyAdapter(Report_Here.this,arrayList_obj,sp.getString("auth", null));
+                        adapter = new MyAdapter(Report_Here.this,arrayList_obj,sp.getString("auth", null),sp.getString("role_type", null));
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         recyclerView.setLayoutManager(mLayoutManager);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -236,21 +201,11 @@ public class Report_Here extends AppCompatActivity {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
+                Log.d("reportlistfailure","****   "+call.toString());
 
-
-
+                commonMethods.showErrorMessage("",getResources().getString(R.string.error_checkconnection));
 
             }
         });
-
-
-
-
-
     }
-
-
-
-
-
 }
