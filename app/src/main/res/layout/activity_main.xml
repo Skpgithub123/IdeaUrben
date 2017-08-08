@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/appyellow"
+    android:gravity="center">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/commontoolbar"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_toolbarhomepage"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#fff"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Home Page"/>
+
+
+
+    </FrameLayout>
+
+
+
+    <GridView
+    android:id="@+id/gridview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnWidth="10dp"
+    android:background="@color/appyellow"
+    android:numColumns="2"
+    android:verticalSpacing="5dp"
+        android:clickable="true"
+    android:horizontalSpacing="5dp"
+    android:stretchMode="columnWidth"
+    android:adjustViewBounds="true"
+    android:gravity="center"/>
+
+
+
+    </LinearLayout>

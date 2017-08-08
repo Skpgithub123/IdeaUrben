@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/appyellow"
+    tools:context="app.msupply.com.ideaurben.Activity.App_User">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <include layout="@layout/commontoolbar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textSize="18sp"
+            android:text="App User"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:id="@+id/tv_tittleprofile"
+            android:textColor="@color/white"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical">
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/buttonselector"
+            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:textStyle="italic"
+            android:padding="15dp"
+            android:text="Add Channel Partner" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/buttonselector"
+            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:padding="15dp"
+            android:textStyle="italic"
+            android:layout_marginTop="15dp"
+            android:text="Modify Channel Partner"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/buttonselector"
+            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:textStyle="italic"
+            android:padding="15dp"
+            android:layout_marginTop="15dp"
+            android:text="Delete Channel Partner"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/buttonselector"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:padding="15dp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:text="Add Sales Team"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/buttonselector"
+            android:textSize="18sp"
+            android:layout_marginTop="15dp"
+            android:padding="15dp"
+            android:gravity="center_horizontal"
+            android:textStyle="italic"
+            android:text="Modify Sales Team"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:background="@drawable/buttonselector"
+            android:textSize="18sp"
+            android:padding="15dp"
+            android:gravity="center_horizontal"
+            android:textStyle="italic"
+            android:layout_marginTop="15dp"
+            android:text="Delete Sales Team"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+
+    </LinearLayout>
+</LinearLayout>

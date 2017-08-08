@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">IdeaUrben</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+
+
+    <string name="entermobilenumber">Mobile Number</string>
+    <string name="Enterpassword">Enter Password</string>
+    <string name="Forgotpass">Forgot Password?</string>
+    <string name="err_msg_mblno">Enter Valid Mobile Number</string>
+    <string name="err_msg_password">Enter Valid Password</string>
+
+    <string name="error_sign_up_password_mismatch">Password and confirm password do not match.</string>
+    <string name="error_pleaseSelectzoone">Please Select Zone Type</string>
+    <string name="register">Register</string>
+    <string name="entername">Your Name</string>
+    <string name="newpassword">New Password</string>
+    <string name="confirmpassword">Confirm Password</string>
+
+    <string name="getotp">Process To OTP</string>
+
+    <string name="updateforgotpassword">Update</string>
+
+    <string name="err_enterotp">Enter OTP</string>
+    <string name="enteremployee_code">User ID</string>
+    <string name="enter_emailadd">Email Address</string>
+    <string name="enter_mbl">Mobile Number</string>
+
+
+    <array name="select_type">Choose Customer type,ZBM,ASM,TSM,DISTRIBUTOR,RETAILER</array>
+    <string name="err_enteruserid">Enter User ID</string>
+    <string name="err_enterpassword">Enter New Password</string>
+    <string name="err_enterconfirmpassword">Enter Confirm Password</string>
+    <string name="err_loginpassword">Enter Password</string>
+    <string name="error_validemail">Enter Valid Email Address</string>
+    <string name="error_username">Enter Your Name</string>
+    <string name="error_checkconnection">Please Check Internet Connection</string>
+    <string name="country_prompt">Select your Zoone</string>
+
+</resources>

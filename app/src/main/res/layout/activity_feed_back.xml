@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/appyellow"
+    tools:context="app.msupply.com.ideaurben.Activity.Report_Here">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <include layout="@layout/commontoolbar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textSize="18sp"
+            android:text="FeedBack"
+            android:textStyle="bold"
+
+            android:padding="10dp"
+            android:id="@+id/tv_tittleprofile"
+            android:textColor="@color/white"/>
+
+    </FrameLayout>
+
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:gravity="left|top"
+        android:layout_marginTop="25dp"
+        android:hint="Subject"
+        android:textStyle="italic"
+        android:imeOptions="actionNext"
+        android:textColor="#000"
+        android:id="@+id/subject"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:background="#fff"/>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:padding="15dp"
+        android:gravity="left|top"
+        android:hint="Enter Discription"
+        android:textStyle="italic"
+        android:imeOptions="actionDone"
+        android:textColor="#000"
+        android:layout_marginTop="25dp"
+        android:id="@+id/body"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:background="#fff"/>
+
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:textColor="#ffffff"
+        android:background="@drawable/buttonselector"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:padding="15dp"
+        android:textStyle="italic"
+        android:id="@+id/send"
+        android:text="Sent Feedback"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+</LinearLayout>
