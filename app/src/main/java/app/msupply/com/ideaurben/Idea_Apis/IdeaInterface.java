@@ -95,6 +95,10 @@ public interface IdeaInterface {
                                       @Field("role_type") String role_type,
                                       @Field("file_id") String file_id);
 
+    @FormUrlEncoded
+    @POST("api/reportApp/get_bulletin_data")
+    Call<ResponseBody> get_BulletInData(@Field("auth_key") String auth_key);
+
 
     /* Get the details of distriputor  datas*/
     @FormUrlEncoded
