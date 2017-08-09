@@ -30,6 +30,23 @@
 
     </FrameLayout>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:gravity="left|top"
+        android:layout_marginTop="25dp"
+        android:text="uohmacapp@gmail.com"
+        android:textStyle="italic"
+        android:enabled="false"
+        android:imeOptions="actionNext"
+        android:textColor="#000"
+        android:id="@+id/from"
+        android:inputType="none"
+        android:editable="false"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:background="#fff"/>
 
 
     <EditText
@@ -41,6 +58,7 @@
         android:hint="Subject"
         android:textStyle="italic"
         android:imeOptions="actionNext"
+        android:singleLine="true"
         android:textColor="#000"
         android:id="@+id/subject"
         android:layout_marginRight="15dp"

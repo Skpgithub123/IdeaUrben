@@ -2,6 +2,7 @@ package app.msupply.com.ideaurben.Activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +10,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import app.msupply.com.ideaurben.Commonclass.GMailSender;
 import app.msupply.com.ideaurben.R;
 
 public class FeedBack extends AppCompatActivity {
 
 
-    EditText subject, emailbody;
+    EditText subject, emailbody,emailfrom;
 
     TextView send;
 
@@ -29,13 +31,28 @@ public class FeedBack extends AppCompatActivity {
 
         subject = (EditText) findViewById(R.id.subject);
         emailbody = (EditText) findViewById(R.id.body);
+        emailfrom = (EditText)findViewById(R.id.from);
         send = (TextView) findViewById(R.id.send);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String s  ="123456@gmail.com";
+
+                try {
+                    GMailSender sender = new GMailSender("uohmacapp@gmail.com", "uohmac@123");
+                    sender.sendMail(subject.getText().toString().trim(),
+                                    emailbody.getText().toString().trim(),
+                                    emailfrom.getText().toString().trim(),
+                                    "arul.s@uohmac.com");
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+                }
+               /* String s  ="123456@gmail.com";
 
 
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -53,7 +70,7 @@ public class FeedBack extends AppCompatActivity {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     Log.d("Email error:",e.toString());
-                }
+                }*/
 
                 /*Intent intent = new Intent(Intent.ACTION_SENDTO); // it's not ACTION_SEND
                 intent.setType("text/plain");
