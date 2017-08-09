@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/tv_idoftypes"/>
 
    <!-- <android.support.v7.widget.CardView
@@ -30,8 +30,11 @@
                 android:textSize="18sp"
                 android:textColor="@color/block"
                 android:elevation="5dp"
-                android:layout_margin="5dp"
-                android:padding="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="15dp"
                 android:background="@color/white"
                 android:maxLines="2"
                 android:id="@+id/typesofreports"
