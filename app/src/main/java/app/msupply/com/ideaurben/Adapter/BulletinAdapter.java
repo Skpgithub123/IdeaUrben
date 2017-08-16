@@ -30,6 +30,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.msupply.com.ideaurben.Activity.ShowImageWebview;
 import app.msupply.com.ideaurben.Commonclass.CommonMethods;
 import app.msupply.com.ideaurben.Commonclass.ConnectionDetector;
 import app.msupply.com.ideaurben.Commonclass.Report_BeanClass;
@@ -129,8 +130,21 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
 
                 if(holder.txt_filetype.getText().toString().equals("pdf")) {
                     viewPdf(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
-                }else if(holder.txt_filetype.getText().toString().equals("csv")){
-                    //viewcsvfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
+                }else if(holder.txt_filetype.getText().toString().equals("xlsx")){
+                    viewexcelfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
+                }else if(holder.txt_filetype.getText().toString().equals("docx")){
+                    viewdocfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
+
+                }else if(holder.txt_filetype.getText().toString().equals("image")){
+
+                    if(ConnectionDetector.isConnectedToInternet(context)) {
+                        Intent i = new Intent(context, ShowImageWebview.class);
+                        i.putExtra("imageurl", holder.txt_filepath.getText().toString().trim());
+                        context.startActivity(i);
+                    }else {
+                        commonMethods.showErrorMessage("", context.getResources().getString(R.string.error_checkconnection));
+                    }
+
                 }
             }
         });
@@ -158,34 +172,45 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
 
     }
 
+    private void viewexcelfile(String file, String directory){
 
-   /* private void viewcsvfile(String file, String directory){
-        File csvFile = new File(Environment.getExternalStorageDirectory() + "/Download/Reports/" + file);
-        Uri path = Uri.fromFile(csvFile);
-        ArrayList<String> categoryList = new ArrayList<String>();
-        Log.d("csvfilepath", ""+path);
+        File pdfFile = new File(Environment.getExternalStorageDirectory() + "/Download/Reports/" + file);
+        Uri path = Uri.fromFile(pdfFile);
+        Log.d("excelfilepath", ""+path);
 
-        String next[] = {};
-        List<String[]> list = new ArrayList<String[]>();
-        try{
-            InputStreamReader csvStreamReader = new InputStreamReader(
-                    context.openFileInput(
-                            csvFile.getPath()));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(path, "application/vnd.ms-excel");
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            CSVReader reader = new CSVReader(csvStreamReader);
-            for (int i = 0; i < list.size(); i++) {
-                next = reader.readNext();
-                if (next != null) {
-                    list.add(next);
-                } else {
-                    break;
-                }
-            }
-        }catch (IOException e) {
-            e.printStackTrace();
+
+        try {
+            context.startActivity(intent);
         }
+        catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "No Application Available to View Excel", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-    }*/
+    private void viewdocfile(String file, String directory){
+        File pdfFile = new File(Environment.getExternalStorageDirectory() + "/Download/Reports/" + file);
+        Uri path = Uri.fromFile(pdfFile);
+        Log.d("excelfilepath", ""+path);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(path, "application/msword");
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+        try {
+            context.startActivity(intent);
+        }
+        catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "No Application Available to View Excel", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
 
     class Download_file extends AsyncTask<String,Integer,String>{
         int length;
