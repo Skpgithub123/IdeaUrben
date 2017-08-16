@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import org.apache.commons.io.FileUtils;
+import org.json.CDL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,9 +71,13 @@ import static android.R.attr.width;
  * Created by Zest Developer on 6/27/2017.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements Filterable {
 
     ArrayList<Report_BeanClass> arrayList = new ArrayList<>();
+
+    private ArrayList<Report_BeanClass> mFilteredList  = new ArrayList<>();
+
+
     String getDate_Filter;
     RecyclerView recyclerView;
 
@@ -98,6 +106,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
         Log.d("sizeofarray","****  "+arrayList.size());
         this.arrayList = arrayList;
+        this.mFilteredList= arrayList;
          this.context = context;
         this.authkey = authkey;
         this.roll_type = roll_type;
@@ -115,10 +124,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
     public void onBindViewHolder(final MyAdapter.MyViewHolder holder, final int position) {
 
 
-        Log.d("arrylistvalue","*** "+arrayList.get(position));
-        holder.tv_date.setText(arrayList.get(position).getDate());
-        holder.textview1.setText(arrayList.get(position).getTitle());
-        holder.seturl.setText(arrayList.get(position).getUrl());
+        Log.d("arrylistvalue","*** "+mFilteredList.get(position));
+        holder.tv_date.setText(mFilteredList.get(position).getDate());
+        holder.textview1.setText(mFilteredList.get(position).getTitle());
+        holder.seturl.setText(mFilteredList.get(position).getUrl());
 
         holder.textview1.setTypeface(MainActivity.bold);
         holder.tv_date.setTypeface(MainActivity.regular);
@@ -149,31 +158,36 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
                     /*if user type is distriputor execture the functions     */
                     getDate_Filter="";
-                    getDate_Filter = arrayList.get(position).getDate();
+                    getDate_Filter = mFilteredList.get(position).getDate();
 
                     Log.d("fetchfiles","***  "+Integer.parseInt(Report_Here.fieldtype));
 
                     if (roll_type.equals("4") ||roll_type.equals("2") || roll_type.equals("3")) {
 
                         if (Integer.parseInt(Report_Here.fieldtype) == 3) {
-                            fetch_Pdfformat_3rd("3");
+                            fetch_Pdfformat_1streport("3");
                         } else if (Integer.parseInt(Report_Here.fieldtype) == 1) {
                             fetch_Pdfformat_1streport("1");
+
                         } else if (Integer.parseInt(Report_Here.fieldtype) == 2) {
 
-                            fetch_Pdfformat_2ndreports("2");
+                            fetch_Pdfformat_1streport("2");
                         }else if (Integer.parseInt(Report_Here.fieldtype) == 4)
                         {
-                            fetch_Pdfformat_4th("4");
+                            fetch_Pdfformat_1streport("4");
                         }else if(Integer.parseInt(Report_Here.fieldtype) == 5)
                         {
-                            fetch_Pdfformat_5th("5");
-                        }else if (Integer.parseInt(Report_Here.fieldtype) == 7)
+                            fetch_Pdfformat_1streport("5");
+                        }else if (Integer.parseInt(Report_Here.fieldtype) == 6)
                         {
-                            fetch_Pdfformat_7th("7");
+                            fetch_Pdfformat_1streport("6");
+                        }
+                        else if (Integer.parseInt(Report_Here.fieldtype) == 7)
+                        {
+                            fetch_Pdfformat_1streport("7");
                         }else if (Integer.parseInt(Report_Here.fieldtype) == 8)
                         {
-                            fetch_Pdfformat_8th("8");
+                            fetch_Pdfformat_1streport("8");
                         }
                     }
 
@@ -192,17 +206,31 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
             @Override
             public void onClick(View view) {
 
-              Toast.makeText(context,"pease open file",Toast.LENGTH_LONG).show();
+              //Toast.makeText(context,"pease open file",Toast.LENGTH_LONG).show();
+
                 getDate_Filter="";
-                getDate_Filter = arrayList.get(position).getDate();
+                getDate_Filter = mFilteredList.get(position).getDate();
 
-                Toast.makeText(context,"pease open file"+getDate_Filter,Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"peaseopenfile"+getDate_Filter+ "  *  "+ Report_Here.fieldtype,Toast.LENGTH_LONG).show();
 
-                File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + Report_Here.fieldtype+""+getDate_Filter+".pdf");
+         /*       File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + Report_Here.fieldtype+""+getDate_Filter+".pdf");
+*/
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files";
+                File dir = new File(path);
 
-                if (pdfFile.exists())
+               /* if (!dir.exists())
+                    dir.mkdirs();*/
+
+                File file = new File(dir, Report_Here.fieldtype+""+getDate_Filter+".csv");
+
+                Log.d("fileexitornot","**  "+file);
+
+
+                if (file.exists())
                 {
-                    viewPdf(Report_Here.fieldtype+""+getDate_Filter+".pdf", "Dir");
+
+                    viewPdfs(file, "Dir");
+                   // viewPdf(Report_Here.fieldtype+""+getDate_Filter+".pdf", "Dir");
 
                 }
                 else
@@ -221,7 +249,50 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
     @Override
     public int getItemCount() {
-        return arrayList.size();
+
+        Log.d(" mFilteredList.size()","**"+ mFilteredList.size());
+        return mFilteredList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+
+                if (charString.isEmpty()) {
+
+                    mFilteredList = arrayList;
+                } else {
+
+                    ArrayList<Report_BeanClass> filteredList = new ArrayList<>();
+
+                    for (Report_BeanClass androidVersion : arrayList) {
+
+                        if (androidVersion.getDate().toLowerCase().contains(charString) /*  ||androidVersion.toLowerCase().contains(charString) || androidVersion.getVer().toLowerCase().contains(charString)*/) {
+
+                            filteredList.add(androidVersion);
+                        }
+                    }
+
+                    mFilteredList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mFilteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mFilteredList = (ArrayList<Report_BeanClass>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -402,16 +473,38 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                if (response.isSuccessful())
-                {
+                if (response.isSuccessful()) {
                     mProgressDialog.dismiss();
                     try {
 
                         String result = response.body().string();
 
 
-                        Log.d("files1st_reports","***   "+result);
+                        Log.d("files1st_reports", "***   " + result);
 
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files";
+                        File dir = new File(path);
+
+                        if (!dir.exists())
+                            dir.mkdirs();
+
+                        File file = new File(dir, filetypes_store+""+getDate_Filter+".csv");
+
+                        JSONArray docs = new JSONArray(result);
+                      //  File file=new File(  Environment.getExternalStorageDirectory().getAbsolutePath() + "/gowthamguru"+"/tmp2/fromJSONss.csv");
+                        String csv = CDL.toString(docs);
+                        FileUtils.writeStringToFile(file, csv);
+
+                       /* Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+                        context.startActivity(intent);*/
+
+                        viewPdfs(file, "Dir");
+
+
+
+
+                        /*
                         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
                         File dir = new File(path);
 
@@ -566,10 +659,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
                         e.printStackTrace();
                     }
 
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");*/
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
-
-
 
             }
 
@@ -2142,7 +2239,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
     private void viewPdf(String file, String directory) {
 
-        File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + file);
+        File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files"+ file);
+       // String path = ;
 
         Log.d("pdffilelocation","****    "+pdfFile);
 
@@ -2150,17 +2248,46 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
 
 
         // Setting the intent for pdf reader
-        Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+        /*Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
         pdfIntent.setDataAndType(path, "application/pdf");
         pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        */
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(pdfFile),"application/vnd.ms-excel");
+
+
 
         try {
-            context.startActivity(pdfIntent);
+            context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "Can't read pdf file", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void viewPdfs(File file, String directory) {
+
+      //  File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files"+ file);
+        // String path = ;
+
+       /// Log.d("pdffilelocation","****    "+pdfFile);
+
+       // Uri path = Uri.fromFile(pdfFile);
+
+
+        // Setting the intent for pdf reader
+        /*Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+        pdfIntent.setDataAndType(path, "application/pdf");
+        pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        */
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
 
 
 
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "Can't read pdf file", Toast.LENGTH_SHORT).show();
+        }
     }
 }

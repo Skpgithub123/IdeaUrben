@@ -9,25 +9,27 @@
     tools:context="app.msupply.com.ideaurben.Activity.Report_Here">
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarmenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/statusbarcolor"/>
 
-        <include layout="@layout/commontoolbar"/>
-
-        <TextView
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_gravity="center_vertical|center_horizontal|left"
             android:textSize="18sp"
-            android:text="Report"
+            android:layout_marginLeft="10dp"
+            android:text="Report Search"
             android:textStyle="bold"
             android:padding="10dp"
             android:id="@+id/tv_tittleprofile"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"/>-->
 
-    </FrameLayout>
+
 
 
 
