@@ -135,7 +135,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
                 }else if(holder.txt_filetype.getText().toString().equals("docx")){
                     viewdocfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
 
-                }else if(holder.txt_filetype.getText().toString().equals("image")){
+                }else if(holder.txt_filetype.getText().toString().equals("images")){
 
                     if(ConnectionDetector.isConnectedToInternet(context)) {
                         Intent i = new Intent(context, ShowImageWebview.class);
