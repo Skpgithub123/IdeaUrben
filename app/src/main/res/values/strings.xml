@@ -26,6 +26,9 @@
     <string name="enter_mbl">Mobile Number</string>
 
 
+    <string name="searchbox">Search</string>
+
+
     <array name="select_type">Choose Customer type,ZBM,ASM,TSM,DISTRIBUTOR,RETAILER</array>
     <string name="err_enteruserid">Enter User ID</string>
     <string name="err_enterpassword">Enter New Password</string>
