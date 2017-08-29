@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IdeaUrben</string>
+    <string name="app_name">Darpan Report</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
 
 
@@ -38,5 +38,8 @@
     <string name="error_username">Enter Your Name</string>
     <string name="error_checkconnection">Please Check Internet Connection</string>
     <string name="country_prompt">Select your Zoone</string>
+
+    <string name="homepage">Home</string>
+
 
 </resources>

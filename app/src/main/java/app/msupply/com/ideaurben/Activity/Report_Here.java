@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,17 +67,25 @@ public class Report_Here extends AppCompatActivity {
     ArrayList<String> arrayList_removedate = new ArrayList<>();
     public  static  String fieldtype="";
     public  static String field_ID="";
+
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report__here);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarmenu);
+        toolbar = (Toolbar) findViewById(R.id.toolbarmenu);
         this.setSupportActionBar(toolbar);
-        toolbar.setTitle("Report Search");
 
+       // toolbar.setTitle("Report Search");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Report Search");
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+     //   getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+       // getSupportActionBar().setDisplayShowTitleEnabled(true);
         arrayList_removedate.add("demo");
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view_reporthere);
 
         bold = Typeface.createFromAsset(getApplicationContext().getAssets(), "Lato-Bold.ttf");
         regular = Typeface.createFromAsset(getApplicationContext().getAssets(), "Lato-Regular.ttf");
@@ -139,7 +149,7 @@ public class Report_Here extends AppCompatActivity {
 
         Log.d("authkeyvalue","*******    "+sp.getString("auth", null));
 
-        Call<ResponseBody> responce_report = getreport.get_ReportDate(sp.getString("auth", null),"4",fieldtype);
+        Call<ResponseBody> responce_report = getreport.get_ReportDate(sp.getString("auth", null),fieldtype);
 
 
 
@@ -225,6 +235,11 @@ public class Report_Here extends AppCompatActivity {
 
         MenuItem search = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        searchView.setQueryHint("Search Date Here.");
+       // searchView.setQueryHint(Html.fromHtml("<font color = #000>" + "Search Date Here."+ "</font>"));
+       // searchView.setHintTextColor(mRes.getColor(android.R.color.white));
+       // searchView.setBackgroundColor(Color.BLACK);
+      //  toolbar.setBackgroundColor(Color.WHITE);
         search(searchView);
      //   searchView.setOnQueryTextListener(this);
 

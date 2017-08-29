@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -18,6 +19,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import app.msupply.com.ideaurben.Adapter.MyAdapter;
 import app.msupply.com.ideaurben.Adapter.ReportcateorieslistAdapter;
@@ -89,6 +93,30 @@ public class ReportCategories_list extends AppCompatActivity implements ItemClic
         tv_title_reportcatgories.setTypeface(bold);
 
 
+
+       /* try {
+
+            JSONObject jsonObject = new JSONObject("your result");
+
+            JSONObject jsonObject1_message = jsonObject.getJSONObject("message_type");
+
+            Map<String,String> map = new HashMap<String,String>();
+            Iterator iter = jsonObject1_message.keys();
+
+            while(iter.hasNext()){
+                String key = (String)iter.next();
+                String value = jsonObject1_message.getString(key);
+                map.put(key,value);
+            }
+
+
+
+        }catch (Exception e)
+        {
+                    Log.d("error","**   "+e.toString());
+        }*/
+
+
         if (connectionDetector.isConnectedToInternet(this))
         {
             Fetch_Filetypes();
@@ -102,6 +130,7 @@ public class ReportCategories_list extends AppCompatActivity implements ItemClic
 
 
     }
+
 
 
     public  void Fetch_Filetypes()
@@ -119,7 +148,7 @@ public class ReportCategories_list extends AppCompatActivity implements ItemClic
 
         IdeaInterface getreport = adapter_retro.create(IdeaInterface.class);
 
-        Call<ResponseBody> report_types = getreport.get_Repotstitle(sp.getString("auth", null));
+        Call<ResponseBody> report_types = getreport.get_Repotstitle(sp.getString("auth_key", null));
 
 
         report_types.enqueue(new Callback<ResponseBody>() {
@@ -144,7 +173,7 @@ public class ReportCategories_list extends AppCompatActivity implements ItemClic
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                             obj_types.setId(jsonObject.getString("file_id"));
-                            obj_types.setTittle(jsonObject.getString("file_name"));
+                            obj_types.setTittle(jsonObject.getString("report_name"));
 
                             types_array.add(obj_types);
 
@@ -155,6 +184,26 @@ public class ReportCategories_list extends AppCompatActivity implements ItemClic
                         my_recycler_view_types.setLayoutManager(mLayoutManager);
                         my_recycler_view_types.setItemAnimator(new DefaultItemAnimator());
                         my_recycler_view_types.setAdapter(type_Adapter);
+
+                       /* my_recycler_view_types.getViewTreeObserver().addOnPreDrawListener(
+                                new ViewTreeObserver.OnPreDrawListener() {
+
+                                    @Override
+                                    public boolean onPreDraw() {
+                                        my_recycler_view_types.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                                        for (int i = 0; i < my_recycler_view_types.getChildCount(); i++) {
+                                            View v = my_recycler_view_types.getChildAt(i);
+                                            v.setAlpha(0.0f);
+                                            v.animate().alpha(1.0f)
+                                                    .setDuration(2000)
+                                                    .setStartDelay(i * 50)
+                                                    .start();
+                                        }
+
+                                        return true;
+                                    }
+                                });*/
 
 
                     } catch (IOException e) {

@@ -13,6 +13,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +73,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ArrayList<String>  arrayList = new ArrayList<>();
 
 
+    ImageView imageView_loginlogo;
 
 
 
@@ -84,6 +88,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         imageView_biglog = (ImageView) findViewById(R.id.movieimage2);
 
+        imageView_loginlogo = (ImageView) findViewById(R.id.imageView_loginlogo);
+
+
+
+
         tv_signup = (TextView) findViewById(R.id.tv_signup);
         tv_forgot = (TextView) findViewById(R.id.tv_forgotpass);
         tv_login  = (TextView) findViewById(R.id.tv_login);
@@ -96,7 +105,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         arrayList.add("ASM");
         arrayList.add("TSM");
         arrayList.add("DISTRIBUTOR");
-        arrayList.add("RETAILER");
+
+       // arrayList.add("RETAILER");
 
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,R.layout.spinner_row, arrayList);
@@ -109,6 +119,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tv_signup.setOnClickListener(this);
         tv_forgot.setOnClickListener(this);
         tv_login.setOnClickListener(this);
+
+
+
 
         connectionDetector = new ConnectionDetector(this);
         commonMethods  = new CommonMethods(this);
@@ -123,6 +136,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tv_signup.setAlpha((float) 0.7);
         tv_forgot.setAlpha((float) 0.7);
        // rol_type.setAlpha((float) 0.8);
+/*
+
+        Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+        Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
+
+        if(tv_login.getVisibility()==View.INVISIBLE){
+
+            tv_login.startAnimation(slideUp);
+            tv_login.setVisibility(View.VISIBLE);
+        }
+*/
 
         bold = Typeface.createFromAsset(getApplicationContext().getAssets(), "Lato-Bold.ttf");
         regular = Typeface.createFromAsset(getApplicationContext().getAssets(), "Lato-Regular.ttf");
@@ -153,7 +177,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 if (i != 0)
                 {
-                    Selectrole = ""+i;
+                   if (arrayList.get(i).equals("DISTRIBUTOR"))
+                   {
+                       Selectrole = "7";
+                   }else if (arrayList.get(i).equals("TSM"))
+                   {
+                       Selectrole = "6";
+                   }else if (arrayList.get(i).equals("ASM"))
+                   {
+                       Selectrole = "5";
+                   }else if (arrayList.get(i).equals("ZBM"))
+                   {
+                       Selectrole = "4";
+                   }
+
+
                 }else
                 {
                     Selectrole = ""+i;
@@ -255,8 +293,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         IdeaInterface report = adapter.create(IdeaInterface.class);
 
         Log.d("rolltypevalues","print"+Selectrole);
-        Call<ResponseBody> responce_login = report.post_Login(et_input_empycode.getText().toString().trim(),
-                et_input_password.getText().toString().trim(),Selectrole);
+        Call<ResponseBody> responce_login;
+        if (Selectrole.equals("7")) {
+            responce_login = report.post_Login(et_input_empycode.getText().toString().trim(),
+                    et_input_password.getText().toString().trim(), Selectrole);
+        }else
+        {
+             responce_login = report.post_LoginManagers(et_input_empycode.getText().toString().trim(),
+                et_input_password.getText().toString().trim(), Selectrole);
+
+        }
+
 
         responce_login.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -280,8 +327,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         {
 
                             spt.putString("status", "Successfully");
-                            spt.putString("auth", jsonObject.getString("auth_key"));
+                            spt.putString("auth_key", jsonObject.getString("auth_key"));
                             spt.putString("role_type", jsonObject.getString("role_type"));
+                            spt.putString("id", jsonObject.getString("id"));
                             spt.commit();
 
                              Intent intent = new Intent(LoginActivity.this,MainActivity.class);
@@ -395,6 +443,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static boolean isValidPass(String password) {
         return password.length() >4;
     }
+
+
+
+
+
 
 
 }

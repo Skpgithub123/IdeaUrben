@@ -6,4 +6,13 @@
     android:layout_height="match_parent"
     tools:context="app.msupply.com.ideaurben.Activity.SplashScreen">
 
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background"
+        android:fitsSystemWindows="true"
+        android:scaleType="fitXY"/>
+
+
 </android.support.constraint.ConstraintLayout>

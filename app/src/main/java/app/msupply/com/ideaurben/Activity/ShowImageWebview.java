@@ -23,6 +23,8 @@ public class ShowImageWebview extends AppCompatActivity {
         setContentView(R.layout.showimagewebview);
         webView = (WebView)findViewById(R.id.webview);
 
+        webView.getSettings().setBuiltInZoomControls(true);
+
         String imageurl = (String) getIntent().getExtras().get("imageurl");
         Log.d("gettingimageurl", imageurl);
         startWebView(imageurl);
