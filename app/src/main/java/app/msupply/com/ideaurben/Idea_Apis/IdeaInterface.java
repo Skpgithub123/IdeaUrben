@@ -113,6 +113,13 @@ public interface IdeaInterface {
     @POST("api/reportApp/get_file_name")
     Call<ResponseBody> get_Repotstitle(@Field("auth_key") String auth_key);
 
+    @FormUrlEncoded
+    @POST("api/feedbackApp/add_feedback")
+    Call<ResponseBody> add_feedback(@Field("auth_key") String auth_key,
+                                        @Field("subject") String subject,
+                                        @Field("feedback_msg") String feedbackmsg);
+
+
 
 
 }
