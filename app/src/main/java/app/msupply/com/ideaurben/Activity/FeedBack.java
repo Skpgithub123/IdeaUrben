@@ -1,6 +1,7 @@
 package app.msupply.com.ideaurben.Activity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,8 @@ public class FeedBack extends AppCompatActivity {
 
     TextView send;
 
+    Typeface regular,bold;
+
 
 
 
@@ -28,11 +31,19 @@ public class FeedBack extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_back);
 
+        bold = Typeface.createFromAsset(getApplicationContext().getAssets(), "Lato-Bold.ttf");
+        regular = Typeface.createFromAsset(getApplicationContext().getAssets(), "Lato-Regular.ttf");
 
         subject = (EditText) findViewById(R.id.subject);
         emailbody = (EditText) findViewById(R.id.body);
         emailfrom = (EditText)findViewById(R.id.from);
         send = (TextView) findViewById(R.id.send);
+
+
+        emailbody.setTypeface(regular);
+        emailfrom.setTypeface(regular);
+        subject.setTypeface(regular);
+        send.setTypeface(bold);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 

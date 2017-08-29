@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +70,13 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
         this.context = context;
         this.authkey = authkey;
     }
+
+    @Override
+    public void onViewDetachedFromWindow(MyViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
+    }
+
     @Override
     public BulletinAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -88,6 +97,15 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
         holder.txt_posteddate.setTypeface(MainActivity.regular);
         holder.tv_download_forbulletin.setTypeface(MainActivity.bold);
         holder.tv_open_forbulletin.setTypeface(MainActivity.regular);
+
+        int lastPosition = -1;
+
+        Animation animation = AnimationUtils.loadAnimation(context,
+                (position > lastPosition) ? R.anim.buttom_one
+                        : R.anim.buttom_two);
+        holder.itemView.startAnimation(animation);
+        lastPosition = position;
+
 
 
         holder.tv_download_forbulletin.setOnClickListener(new View.OnClickListener() {
@@ -128,14 +146,14 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
             @Override
             public void onClick(View view) {
 
-                if(holder.txt_filetype.getText().toString().equals("pdf")) {
+            /*    if(holder.txt_filetype.getText().toString().equals("pdf")) {
                     viewPdf(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
                 }else if(holder.txt_filetype.getText().toString().equals("xlsx")){
                     viewexcelfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
                 }else if(holder.txt_filetype.getText().toString().equals("docx")){
                     viewdocfile(holder.txt_filetitle.getText().toString().trim()+"."+holder.txt_filetype.getText().toString().trim(), "Dir");
 
-                }else if(holder.txt_filetype.getText().toString().equals("image")){
+                }else if(holder.txt_filetype.getText().toString().equals("images")){
 
                     if(ConnectionDetector.isConnectedToInternet(context)) {
                         Intent i = new Intent(context, ShowImageWebview.class);
@@ -145,7 +163,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
                         commonMethods.showErrorMessage("", context.getResources().getString(R.string.error_checkconnection));
                     }
 
-                }
+                }*/
             }
         });
 
@@ -214,7 +232,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
 
     class Download_file extends AsyncTask<String,Integer,String>{
         int length;
-
+        String filetitle="",filetypes="";
 
         @Override
         protected void onPreExecute() {
@@ -222,6 +240,7 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
             mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setMessage("Downloading...");
             mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setCancelable(false);
             mProgressDialog.setMax(100);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.show();
@@ -235,6 +254,11 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
             try{
                 URL url = new URL(strings[0]);
                 filenames = strings[0];
+
+                filetitle = strings[1];
+                filetypes = strings[2];
+
+
                 Log.d("filename", filenames);
                 URLConnection connection = url.openConnection();
                 connection.connect();
@@ -288,6 +312,26 @@ public class BulletinAdapter extends RecyclerView.Adapter<BulletinAdapter.MyView
 
             String filepath_fromsdcared = Environment.getExternalStorageDirectory().toString() + dir +filenames;
             mProgressDialog.dismiss();
+            //String filetitle="",filetypes="";
+            if(filetypes.equals("pdf")) {
+                viewPdf(filetitle+"."+filetypes, "Dir");
+            }else if(filetypes.equals("xlsx")){
+                viewexcelfile(filetitle+"."+filetypes, "Dir");
+            }else if(filetypes.equals("docx")){
+                viewdocfile(filetitle+"."+filetypes, "Dir");
+
+            }else if(filetypes.equals("images")){
+
+                if(ConnectionDetector.isConnectedToInternet(context)) {
+                    Intent i = new Intent(context, ShowImageWebview.class);
+                    i.putExtra("imageurl", filenames);
+                    context.startActivity(i);
+                }else {
+                    commonMethods.showErrorMessage("", context.getResources().getString(R.string.error_checkconnection));
+                }
+
+            }
+
             Log.d("filepath", "====" + filepath_fromsdcared);
         }
     }

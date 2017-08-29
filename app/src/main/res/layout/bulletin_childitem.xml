@@ -77,15 +77,14 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:text="Download"
                 android:textStyle="italic"
                 android:textSize="15sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="18dp"
                 android:padding="10dp"
                 android:id="@+id/tv_download_forbulletin"
                 android:layout_marginRight="3dp"
-                android:layout_weight=".1"
                 android:gravity="center_horizontal"
                 android:background="@drawable/buttonselector"
                 android:textColor="#000"/>
@@ -101,6 +100,7 @@
                 android:layout_marginBottom="5dp"
                 android:id="@+id/tv_open_forbulletin"
                 android:textSize="15sp"
+                android:visibility="gone"
                 android:layout_weight=".1"
                 android:padding="10dp"
                 android:layout_marginTop="5dp"

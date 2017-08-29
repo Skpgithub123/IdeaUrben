@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/appyellow"
+    android:background="#E7D744"
     android:gravity="center">
 
 
@@ -19,9 +19,9 @@
             android:id="@+id/tv_toolbarhomepage"
             android:textStyle="bold"
             android:textSize="18sp"
+            android:visibility="visible"
             android:textColor="#fff"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Home Page"/>
+            android:gravity="center_horizontal|center_vertical"/>
 
 
 

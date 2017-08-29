@@ -104,7 +104,7 @@ public class Bullentin_Board extends AppCompatActivity {
         IdeaInterface getbulletindata = adapter_retro.create(IdeaInterface.class);
 
 
-        Call<ResponseBody> responce_report = getbulletindata.get_BulletInData(sp.getString("auth", null));
+        Call<ResponseBody> responce_report = getbulletindata.get_BulletInData(sp.getString("auth_key", null));
 
         responce_report.enqueue(new Callback<ResponseBody>() {
             @Override

@@ -2,14 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:layout_margin="3dp"
+    android:elevation="3dp"
+    android:background="#E7D744"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/tv_idoftypes"/>
+
 
    <!-- <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -23,25 +22,42 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp">-->
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_idoftypes"
+        android:visibility="gone"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
                 android:textColor="@color/block"
                 android:elevation="5dp"
+                android:layout_weight=".2"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:padding="15dp"
-                android:background="@color/white"
+                android:padding="10dp"
                 android:maxLines="2"
                 android:id="@+id/typesofreports"
                 android:text=""/>
 
 
-
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:layout_weight=".1"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="Open"
+        android:padding="10dp"
+        android:elevation="5dp"
+        android:textColor="#000"
+        android:background="#037BB8"
+        android:textSize="18sp"
+        android:id="@+id/tv_downloadbutton"/>
 
  <!--   </android.support.v7.widget.CardView>-->
 

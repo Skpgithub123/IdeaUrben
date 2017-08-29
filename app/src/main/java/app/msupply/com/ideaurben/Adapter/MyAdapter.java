@@ -1,5 +1,6 @@
 package app.msupply.com.ideaurben.Adapter;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,6 +103,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
     File dir=null;
 
+    Dialog dialog;
+
     String authkey ="";
     String roll_type ="";
 
@@ -140,7 +146,170 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
             @Override
             public void onClick(View view) {
 
-                if (connectionDetector.isConnectedToInternet(context))
+
+                dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth);
+                dialog.setContentView(R.layout.dialog_chooseoptions);
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+
+                RadioGroup radioGroup = dialog.findViewById(R.id.radio_guropid);
+                RadioButton rb_pdf = dialog.findViewById(R.id.rb_pdf);
+                RadioButton rb_excel = dialog.findViewById(R.id.rb_excel);
+
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup,int i) {
+
+                        switch (i)
+                        {
+                            case R.id.rb_pdf:
+                            {
+                               dialog.dismiss();
+                                if (connectionDetector.isConnectedToInternet(context)) {
+                                    dir = new File(Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/");
+                                    dir.mkdirs();
+
+                                    String PATH = Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/";
+                                    if (!(new File(PATH)).exists()) {
+                                        new File(PATH).mkdirs();
+                                    }
+                                    getDate_Filter="";
+                                    getDate_Filter = mFilteredList.get(position).getDate();
+                                    Log.d("fetchfilesdate","***  "+getDate_Filter);
+                                    Log.d("fetchfiles","***  "+Integer.parseInt(Report_Here.fieldtype));
+
+                                    if (roll_type.equals("4") ||roll_type.equals("2") || roll_type.equals("3")) {
+
+                                        if (Integer.parseInt(Report_Here.fieldtype) == 3) {
+                                            fetch_Pdfformat_3rd("3");
+                                        } else if (Integer.parseInt(Report_Here.fieldtype) == 1) {
+                                            Pdfformat_1streport("1");
+
+                                        } else if (Integer.parseInt(Report_Here.fieldtype) == 2) {
+
+                                            fetch_Pdfformat_2ndreports("2");
+                                        }else if (Integer.parseInt(Report_Here.fieldtype) == 4)
+                                        {
+                                            fetch_Pdfformat_4th("4");
+                                        }else if(Integer.parseInt(Report_Here.fieldtype) == 5)
+                                        {
+                                            fetch_Pdfformat_5th("5");
+                                        }else if (Integer.parseInt(Report_Here.fieldtype) == 6)
+                                        {
+                                            //  fetch_Pdfformat_1streport("6");
+                                        }
+                                        else if (Integer.parseInt(Report_Here.fieldtype) == 7)
+                                        {
+                                            fetch_Pdfformat_7th("7");
+                                        }else if (Integer.parseInt(Report_Here.fieldtype) == 8)
+                                        {
+                                            fetch_Pdfformat_8th("8");
+                                        }
+                                    }else
+                                    {
+                                        dir = new File(Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/");
+                                        dir.mkdirs();
+
+                                        String PATHs = Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/";
+                                        if (!(new File(PATHs)).exists()) {
+                                            new File(PATHs).mkdirs();
+                                        }
+                                        new Download_file().execute(holder.seturl.getText().toString().trim(),  holder.textview1.getText().toString().trim(),""+Report_Here.fieldtype);
+
+                                        // new Download_file().execute();
+                                    }
+
+
+                                }else
+                                {
+                                    commonMethods = new CommonMethods(context);
+
+                                    commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
+                                }
+                                //   Toast.makeText(context,"exceldisplay",Toast.LENGTH_LONG).show();
+
+
+
+                                break;
+                            }
+                            case R.id.rb_excel:
+                            {
+                                dialog.dismiss();
+                                //  Toast.makeText(context,"pdf display",Toast.LENGTH_LONG).show();
+
+                                if (connectionDetector.isConnectedToInternet(context)) {
+                                    dir = new File(Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/");
+                                    dir.mkdirs();
+
+                                    String PATH = Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/";
+                                    if (!(new File(PATH)).exists()) {
+                                        new File(PATH).mkdirs();
+                                    }
+                                    getDate_Filter="";
+                                    getDate_Filter = mFilteredList.get(position).getDate();
+                                    Log.d("fetchfilesdate","***  "+getDate_Filter);
+                                    Log.d("fetchfiles","***  "+Integer.parseInt(Report_Here.fieldtype));
+
+                                    if (roll_type.equals("4") ||roll_type.equals("2") || roll_type.equals("3")) {
+
+                                        if (Integer.parseInt(Report_Here.fieldtype) == 3) {
+                                            fetch_Pdfformat_1streport("3");
+                                        } else if (Integer.parseInt(Report_Here.fieldtype) == 1) {
+                                            fetch_Pdfformat_1streport("1");
+
+                                        } else if (Integer.parseInt(Report_Here.fieldtype) == 2) {
+
+                                            fetch_Pdfformat_1streport("2");
+                                        }else if (Integer.parseInt(Report_Here.fieldtype) == 4)
+                                        {
+                                            fetch_Pdfformat_1streport("4");
+                                        }else if(Integer.parseInt(Report_Here.fieldtype) == 5)
+                                        {
+                                            fetch_Pdfformat_1streport("5");
+                                        }else if (Integer.parseInt(Report_Here.fieldtype) == 6)
+                                        {
+                                            fetch_Pdfformat_1streport("6");
+                                        }
+                                        else if (Integer.parseInt(Report_Here.fieldtype) == 7)
+                                        {
+                                            fetch_Pdfformat_1streport("7");
+                                        }else if (Integer.parseInt(Report_Here.fieldtype) == 8)
+                                        {
+                                            fetch_Pdfformat_1streport("8");
+                                        }
+                                    }else
+                                    {
+                                        dir = new File(Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/");
+                                        dir.mkdirs();
+
+                                        String PATHs = Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/";
+                                        if (!(new File(PATHs)).exists()) {
+                                            new File(PATHs).mkdirs();
+                                        }
+                                        new Download_file().execute(holder.seturl.getText().toString().trim(),  holder.textview1.getText().toString().trim(),""+Report_Here.fieldtype);
+
+                                        // new Download_file().execute();
+                                    }
+
+
+                                }else
+                                {
+                                    commonMethods = new CommonMethods(context);
+
+                                    commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
+                                }
+
+                                break;
+                            }
+
+
+                        }
+
+                    }
+                });
+
+             /*   if (connectionDetector.isConnectedToInternet(context))
                 {
                     dir = new File(Environment.getExternalStorageDirectory() + "/Download/Idea_Reports/");
                     dir.mkdirs();
@@ -150,13 +319,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         new File(PATH).mkdirs();
                     }
 
-                    /*String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+                    *//*String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
                     myNewFolder = new File(extStorageDirectory + newFolder);
-                    myNewFolder.mkdir();*/
+                    myNewFolder.mkdir();*//*
 
                    // new Download_file().execute(holder.seturl.getText().toString().trim(),  holder.textview1.getText().toString().trim());
 
-                    /*if user type is distriputor execture the functions     */
+                    *//*if user type is distriputor execture the functions     *//*
+
+
                     getDate_Filter="";
                     getDate_Filter = mFilteredList.get(position).getDate();
 
@@ -196,7 +367,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     commonMethods = new CommonMethods(context);
 
                     commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
-                }
+                }*/
               //  Toast.makeText(context,"downloadclicked",Toast.LENGTH_LONG).show();
 
             }
@@ -208,18 +379,119 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
               //Toast.makeText(context,"pease open file",Toast.LENGTH_LONG).show();
 
-                getDate_Filter="";
-                getDate_Filter = mFilteredList.get(position).getDate();
+                dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth);
+                dialog.setContentView(R.layout.dialog_chooseoptions);
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
 
-                Toast.makeText(context,"peaseopenfile"+getDate_Filter+ "  *  "+ Report_Here.fieldtype,Toast.LENGTH_LONG).show();
+                RadioGroup radioGroup = dialog.findViewById(R.id.radio_guropid);
+                RadioButton rb_pdf = dialog.findViewById(R.id.rb_pdf);
+                RadioButton rb_excel = dialog.findViewById(R.id.rb_excel);
+                rb_pdf.setText("Open PDF");
+                rb_excel.setText("Open Excel");
+
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+
+                        switch (i)
+                        {
+                            case R.id.rb_pdf:
+                            {
+                                dialog.dismiss();
+
+                                getDate_Filter="";
+                                getDate_Filter = mFilteredList.get(position).getDate();
+
+                                ///   Toast.makeText(context,"peaseopenfile"+getDate_Filter+ "  *  "+ Report_Here.fieldtype,Toast.LENGTH_LONG).show();
 
          /*       File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + Report_Here.fieldtype+""+getDate_Filter+".pdf");
 */
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files";
-                File dir = new File(path);
+                                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
+                                File dir = new File(path);
 
                /* if (!dir.exists())
                     dir.mkdirs();*/
+
+                                File file = new File(dir, Report_Here.fieldtype+""+getDate_Filter+".pdf");
+
+                                Log.d("fileexitornot","**  "+file);
+
+
+                                if (file.exists())
+                                {
+
+                                    viewPdf(file, "Dir");
+                                    // viewPdf(Report_Here.fieldtype+""+getDate_Filter+".pdf", "Dir");
+
+                                }
+                                else
+                                {
+                                    commonMethods = new CommonMethods(context);
+                                    commonMethods.showErrorMessage("","File Not Yet Downloaded Please Download File..");
+                                }
+
+
+                                break;
+                            }
+                            case R.id.rb_excel:
+                            {
+                                dialog.dismiss();
+                                getDate_Filter="";
+                                getDate_Filter = mFilteredList.get(position).getDate();
+
+                                ///   Toast.makeText(context,"peaseopenfile"+getDate_Filter+ "  *  "+ Report_Here.fieldtype,Toast.LENGTH_LONG).show();
+
+         /*       File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + Report_Here.fieldtype+""+getDate_Filter+".pdf");
+*/
+                                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files";
+                                File dir = new File(path);
+
+                            //    dfgdf
+
+               /* if (!dir.exists())
+                    dir.mkdirs();*/
+
+                                File file = new File(dir, Report_Here.fieldtype+""+getDate_Filter+".csv");
+
+                                Log.d("fileexitornot","**  "+file);
+
+
+                                if (file.exists())
+                                {
+
+                                    viewPdfs(file, "Dir");
+                                    // viewPdf(Report_Here.fieldtype+""+getDate_Filter+".pdf", "Dir");
+
+                                }
+                                else
+                                {
+                                    commonMethods = new CommonMethods(context);
+                                    commonMethods.showErrorMessage("","File Not Yet Downloaded Please Download File..");
+                                }
+
+                                break;
+                            }
+                        }
+
+
+                    }
+                });
+
+
+               /* getDate_Filter="";
+                getDate_Filter = mFilteredList.get(position).getDate();
+
+             ///   Toast.makeText(context,"peaseopenfile"+getDate_Filter+ "  *  "+ Report_Here.fieldtype,Toast.LENGTH_LONG).show();
+
+         *//*       File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir" + "/" + Report_Here.fieldtype+""+getDate_Filter+".pdf");
+*//*
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files";
+                File dir = new File(path);
+
+               *//* if (!dir.exists())
+                    dir.mkdirs();*//*
 
                 File file = new File(dir, Report_Here.fieldtype+""+getDate_Filter+".csv");
 
@@ -238,7 +510,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     commonMethods = new CommonMethods(context);
                     commonMethods.showErrorMessage("","File Not Yet Downloaded Please Download File..");
                 }
-
+*/
             }
         });
 
@@ -344,7 +616,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                 // this will be useful so that you can show a tipical 0-100% progress bar
                  length = connection.getContentLength();
                 filesize = length;
-                File file = new File(dir,""+ strings[1]+".csv");
+                File file = new File(dir,""+ strings[2]+","+strings[1]+".csv");
 
                 Log.d("filepath","*****   "+file);
 
@@ -466,7 +738,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         IdeaInterface getreport_1st = adapter_retro.create(IdeaInterface.class);
 
-        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(authkey, roll_type,filetypes);
+        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(/*authkey*/ roll_type,filetypes);
 
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
@@ -475,10 +747,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful()) {
                     mProgressDialog.dismiss();
+
+                    commonMethods = new CommonMethods(context);
+
+                    commonMethods.showErrorMessage("","CSV File Downloaded Successfully");
+
                     try {
 
                         String result = response.body().string();
-
 
                         Log.d("files1st_reports", "***   " + result);
 
@@ -499,7 +775,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
                         context.startActivity(intent);*/
 
-                        viewPdfs(file, "Dir");
+
+
+
+                       // viewPdfs(file, "Dir");
 
 
 
@@ -687,7 +966,218 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
     }
 
+    public void Pdfformat_1streport(String filetypes)
+    {
 
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Please Wait....");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+        document = new Document();
+        filetypes_store = filetypes;
+
+        Retrofit adapter_retro = new Retrofit.Builder()
+                .baseUrl(Constandapi.ROOT_URL)
+                .build();
+
+        IdeaInterface getreport_1st = adapter_retro.create(IdeaInterface.class);
+
+        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(/*authkey*/ roll_type,filetypes);
+
+
+        responce_distributore_report.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+
+
+                    try {
+
+                        String result = response.body().string();
+
+                        Log.d("files1st_reports", "***   " + result);
+
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
+                        File dir = new File(path);
+
+                        if (!dir.exists())
+                            dir.mkdirs();
+
+                        File file = new File(dir, filetypes_store+""+getDate_Filter+".pdf");
+                        FileOutputStream fOut = new FileOutputStream(file);
+
+                        PdfPTable tables = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+
+                        PdfPTable tables_two = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+                        PdfPTable tables_three = new PdfPTable(new float[] {10, 10, 10, 10, 10,10,10});
+
+                        PdfPTable tables_foure = new PdfPTable(new float[] {10, 10, 10, 10, 10,10});
+
+                        tables.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_two.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_two.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_three.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_three.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+                        tables_foure.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+                        tables_foure.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+
+                        tables.addCell("ID");
+                        tables.addCell("Demo_number");
+                        tables.addCell("Circle_name");
+                        tables.addCell("Phase_name");
+                        tables.addCell("Rollout_type");
+                        tables.addCell("Device_serial_number");
+                        tables.addCell("Device_description");
+
+                        tables_two.addCell("Deployed_by");
+                        tables_two.addCell("Deployeddatetime");
+                        tables_two.addCell("Jan_actv");
+                        tables_two.addCell("Feb_actv");
+                        tables_two.addCell("Mar_actv");
+                        tables_two.addCell("Apr_actv");
+                        tables_two.addCell("May_actv");
+
+                        tables_three.addCell("June_actv");
+                        tables_three.addCell("July_actv");
+                        tables_three.addCell("August_actv");
+                        tables_three.addCell("September_actv");
+                        tables_three.addCell("Octomber_actv");
+                        tables_three.addCell("November_actv");
+                        tables_three.addCell("December_actv");
+
+                        tables_foure.addCell("Distno");
+                        tables_foure.addCell("Dist_name");
+                        tables_foure.addCell("Zone");
+                        tables_foure.addCell("Asm_name");
+                        tables_foure.addCell("Officer_name");
+                        tables_foure.addCell("Created_date");
+
+                        tables.setHeaderRows(1);
+
+                        tables_two.setHeaderRows(1);
+
+                        tables_three.setHeaderRows(1);
+                        tables_foure.setHeaderRows(1);
+
+                        PdfPCell[] cells = tables.getRow(0).getCells();
+                        PdfPCell[] cellstwo = tables_two.getRow(0).getCells();
+                        PdfPCell[] cellsthree = tables_three.getRow(0).getCells();
+                        PdfPCell[] cellsfoure = tables_foure.getRow(0).getCells();
+
+
+                        for (int j=0;j<cells.length;j++){
+                            cells[j].setBackgroundColor(BaseColor.GRAY);
+                            cellstwo[j].setBackgroundColor(BaseColor.GRAY);
+                            cellsthree[j].setBackgroundColor(BaseColor.GRAY);
+
+                        }
+
+                        for (int j=0;j<cellsfoure.length;j++)
+                        {
+                            cellsfoure[j].setBackgroundColor(BaseColor.GRAY);
+                        }
+
+                        JSONArray jsonArray = new JSONArray(result);
+
+                        for (int i = 0 ;i<jsonArray.length();i++)
+                        {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (getDate_Filter.equals(jsonObject.getString("created_date"))) {
+                                tables.addCell(jsonObject.getString("id"));
+                                tables.addCell(jsonObject.getString("demo_number"));
+                                tables.addCell(jsonObject.getString("circle_name"));
+                                tables.addCell(jsonObject.getString("phase_name"));
+                                tables.addCell(jsonObject.getString("rollout_type"));
+                                tables.addCell(jsonObject.getString("device_serial_number"));
+                                tables.addCell(jsonObject.getString("device_description"));
+
+                                tables_two.addCell(jsonObject.getString("deployed_by"));
+                                tables_two.addCell(jsonObject.getString("deployeddatetime"));
+                                tables_two.addCell(jsonObject.getString("deployeddatetime"));
+                                tables_two.addCell(jsonObject.getString("feb_actv"));
+                                tables_two.addCell(jsonObject.getString("mar_actv"));
+                                tables_two.addCell(jsonObject.getString("apr_actv"));
+                                tables_two.addCell(jsonObject.getString("may_actv"));
+
+
+                                tables_three.addCell(jsonObject.getString("june_actv"));
+                                tables_three.addCell(jsonObject.getString("july_actv"));
+                                tables_three.addCell(jsonObject.getString("august_actv"));
+                                tables_three.addCell(jsonObject.getString("september_actv"));
+                                tables_three.addCell(jsonObject.getString("octomber_actv"));
+                                tables_three.addCell(jsonObject.getString("november_actv"));
+                                tables_three.addCell(jsonObject.getString("december_actv"));
+
+
+                                tables_foure.addCell(jsonObject.getString("distno"));
+                                tables_foure.addCell(jsonObject.getString("dist_name"));
+                                tables_foure.addCell(jsonObject.getString("zone"));
+                                tables_foure.addCell(jsonObject.getString("asm_name"));
+                                tables_foure.addCell(jsonObject.getString("officer_name"));
+                                tables_foure.addCell(jsonObject.getString("created_date"));
+                            }
+                        }
+                        PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                        document.open();
+
+
+                        tables.setSpacingAfter(20f);
+
+                        tables_two.setSpacingAfter(20f);
+                        tables_three.setSpacingAfter(20f);
+                        tables_foure.setSpacingAfter(20f);
+
+
+                        document.add(tables);
+                        document.add(tables_two);
+                        document.add(tables_three);
+                        document.add(tables_foure);
+
+                        //  document.addCreationDate();
+                        document.close();
+
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (DocumentException e) {
+                        e.printStackTrace();
+                    }
+                    mProgressDialog.dismiss();
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+                   // viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    }
+
+                }
+
+
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+
+                mProgressDialog.dismiss();
+                commonMethods = new CommonMethods(context);
+                commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
+
+
+            }
+        });
+
+
+
+
+    }
     public void fetch_Pdfformat_2ndreports(String filetypes)
     {
 
@@ -704,7 +1194,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         IdeaInterface getreport_1st = adapter_retro.create(IdeaInterface.class);
 
-        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(authkey, roll_type,filetypes);
+        Call<ResponseBody> responce_distributore_report = getreport_1st.get_ReportDate(/*authkey*/ roll_type,filetypes);
 
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
@@ -713,7 +1203,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful())
                 {
-                    mProgressDialog.dismiss();
+                 //   mProgressDialog.dismiss();
                     try {
 
                         String  result = response.body().string();
@@ -721,7 +1211,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         Log.d("resultof2ndreports","****   "+result);
 
 
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
                         File dir = new File(path);
 
                         if (!dir.exists())
@@ -838,22 +1328,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                             }
 
-                            PdfWriter writer =  PdfWriter.getInstance(document, fOut);
-                            document.open();
-
-
-                            tables.setSpacingAfter(20f);
-
-                            tables_two.setSpacingAfter(20f);
-                            tables_three.setSpacingAfter(20f);
-
-                            document.add(tables);
-                            document.add(tables_two);
-                            document.add(tables_three);
-
-                            //  document.addCreationDate();
-                            document.close();
                         }
+                        PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                        document.open();
+
+
+                        tables.setSpacingAfter(20f);
+
+                        tables_two.setSpacingAfter(20f);
+                        tables_three.setSpacingAfter(20f);
+
+                        document.add(tables);
+                        document.add(tables_two);
+                        document.add(tables_three);
+
+                        //  document.addCreationDate();
+                        document.close();
 
 
                     } catch (IOException e) {
@@ -863,8 +1353,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     } catch (DocumentException e) {
                         e.printStackTrace();
                     }
+                   // mProgressDialog.dismiss();
                     mProgressDialog.dismiss();
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+                    //viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
                 }
 
 
@@ -901,7 +1394,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         Log.d("authkeyvalue", "*******    " + authkey);
 
-        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filedtypes);
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(/*authkey*/ roll_type,filedtypes);
 
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
@@ -911,7 +1404,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful()) {
 
-                    mProgressDialog.dismiss();
+                 //   mProgressDialog.dismiss();
                     try {
 
 
@@ -919,7 +1412,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                         Log.d("dispalyresults", "****   " + result_distriputor);
 
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
                         File dir = new File(path);
 
                         if (!dir.exists())
@@ -1232,7 +1725,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     }/* finally {
 
                     }*/
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    mProgressDialog.dismiss();
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+                    //viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
 
 
                 }
@@ -1273,7 +1769,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         Log.d("authkeyvalue", "*******    " + authkey);
 
-        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filetype);
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(/*authkey*/ roll_type,filetype);
 
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
@@ -1282,7 +1778,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful())
                 {
-                    mProgressDialog.dismiss();
+                   // mProgressDialog.dismiss();
 
                     try {
 
@@ -1291,7 +1787,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         Log.d("results_4threport","***   "+results_4threport.toString());
 
 
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
                         File dir = new File(path);
 
                         if (!dir.exists())
@@ -1538,7 +2034,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     } catch (DocumentException e) {
                         e.printStackTrace();
                     }
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    mProgressDialog.dismiss();
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+                 //   viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
                 }
 
 
@@ -1572,7 +2071,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         Log.d("authkeyvalue5th", "*******    " + authkey);
 
-        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filetype);
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(/*authkey*/ roll_type,filetype);
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -1580,7 +2079,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful())
                 {
-                    mProgressDialog.dismiss();
+                   // mProgressDialog.dismiss();
                     try {
 
                         String results = response.body().string();
@@ -1588,7 +2087,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         Log.d("resultvaues","****  "+results.toString());
 
 
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
                         File dir = new File(path);
 
                         if (!dir.exists())
@@ -1697,31 +2196,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
 
                             }
-                            PdfWriter writer =  PdfWriter.getInstance(document, fOut);
-                            document.open();
-
-
-                            tables.setSpacingAfter(20f);
-
-                            tables_two.setSpacingAfter(20f);
-                            tables_three.setSpacingAfter(20f);
-
-
-
-                            document.add(tables);
-                            document.add(tables_two);
-                            document.add(tables_three);
-
-
-                            //  document.addCreationDate();
-                            document.close();
-
-
-
-
-
                         }
 
+                        PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                        document.open();
+
+
+                        tables.setSpacingAfter(20f);
+
+                        tables_two.setSpacingAfter(20f);
+                        tables_three.setSpacingAfter(20f);
+
+
+
+                        document.add(tables);
+                        document.add(tables_two);
+                        document.add(tables_three);
+
+
+                        //  document.addCreationDate();
+                        document.close();
 
 
                     } catch (IOException e) {
@@ -1732,7 +2226,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         e.printStackTrace();
                     }
 
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    mProgressDialog.dismiss();
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+
+                   // viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
 
                 }
 
@@ -1772,7 +2270,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         Log.d("authkeyvalue5th", "*******    " + authkey);
 
-        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filetypes);
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(/*authkey*/ roll_type,filetypes);
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -1780,7 +2278,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful())
                 {
-                    mProgressDialog.dismiss();
+                   // mProgressDialog.dismiss();
 
                     try {
 
@@ -1788,7 +2286,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                         Log.d("report7ths","****   "+results);
 
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
                         File dir = new File(path);
 
                         if (!dir.exists())
@@ -1900,28 +2398,28 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
 
                             }
-                            PdfWriter writer =  PdfWriter.getInstance(document, fOut);
-                            document.open();
-
-
-                            tables.setSpacingAfter(20f);
-
-                            tables_two.setSpacingAfter(20f);
-                            tables_three.setSpacingAfter(20f);
-
-
-
-                            document.add(tables);
-                            document.add(tables_two);
-                            document.add(tables_three);
-
-
-                            //  document.addCreationDate();
-                            document.close();
-
-
 
                         }
+
+
+                        PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                        document.open();
+
+
+                        tables.setSpacingAfter(20f);
+
+                        tables_two.setSpacingAfter(20f);
+                        tables_three.setSpacingAfter(20f);
+
+
+
+                        document.add(tables);
+                        document.add(tables_two);
+                        document.add(tables_three);
+
+
+                        //  document.addCreationDate();
+                        document.close();
 
 
 
@@ -1933,8 +2431,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     } catch (DocumentException e) {
                         e.printStackTrace();
                     }
-
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    mProgressDialog.dismiss();
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+                    //viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
                 }
 
             }
@@ -1973,7 +2473,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         Log.d("authkeyvalue8th", "*******    " + authkey);
 
-        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(authkey, roll_type,filetypes);
+        Call<ResponseBody> responce_distributore_report = getreport.get_ReportDate(/*authkey*/ roll_type,filetypes);
 
 
         responce_distributore_report.enqueue(new Callback<ResponseBody>() {
@@ -1983,14 +2483,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                 if (response.isSuccessful())
                 {
-                    mProgressDialog.dismiss();
+                   // mProgressDialog.dismiss();
                     try {
 
                         String result = response.body().string();
 
                         Log.d("8threport","responcevalues"+result);
 
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Dir";
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF";
                         File dir = new File(path);
 
                         if (!dir.exists())
@@ -2121,9 +2621,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                         for (int  i =0;i<jsonArray.length();i++)
                         {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-
+                            Log.d("getDate_Filter","***  "+getDate_Filter+" "+jsonObject.getString("created_date"));
                             if (getDate_Filter.equals(jsonObject.getString("created_date")))
                             {
+
 
                                 tables.addCell(jsonObject.getString("id"));
                                 tables.addCell(jsonObject.getString("zone"));
@@ -2179,35 +2680,35 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
                             }
 
-                            PdfWriter writer =  PdfWriter.getInstance(document, fOut);
-                            document.open();
-
-
-                            tables.setSpacingAfter(20f);
-
-                            tables_two.setSpacingAfter(20f);
-                            tables_three.setSpacingAfter(20f);
-                            tables_foure.setSpacingAfter(20f);
-                            tables_five.setSpacingAfter(20f);
-                            tables_six.setSpacingAfter(20f);
-
-
-
-
-                            document.add(tables);
-                            document.add(tables_two);
-                            document.add(tables_three);
-                            document.add(tables_foure);
-                            document.add(tables_five);
-                            document.add(tables_six);
-
-
-                            //  document.addCreationDate();
-                            document.close();
-
 
                         }
 
+
+                        PdfWriter writer =  PdfWriter.getInstance(document, fOut);
+                        document.open();
+
+
+                        tables.setSpacingAfter(20f);
+
+                        tables_two.setSpacingAfter(20f);
+                        tables_three.setSpacingAfter(20f);
+                        tables_foure.setSpacingAfter(20f);
+                        tables_five.setSpacingAfter(20f);
+                        tables_six.setSpacingAfter(20f);
+
+
+
+
+                        document.add(tables);
+                        document.add(tables_two);
+                        document.add(tables_three);
+                        document.add(tables_foure);
+                        document.add(tables_five);
+                        document.add(tables_six);
+
+
+                        //  document.addCreationDate();
+                        document.close();
 
 
 
@@ -2220,15 +2721,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
                     } catch (DocumentException e) {
                         e.printStackTrace();
                     }
-
-                    viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
+                    mProgressDialog.dismiss();
+                    commonMethods = new CommonMethods(context);
+                    commonMethods.showErrorMessage("","PDF File Downloaded Successfully");
+                   // viewPdf(filetypes_store+""+getDate_Filter+".pdf", "Dir");
                 }
 
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                 mProgressDialog.dismiss();
+                commonMethods = new CommonMethods(context);
+                commonMethods.showErrorMessage("",context.getResources().getString(R.string.error_checkconnection));
             }
         });
 
@@ -2237,28 +2742,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
     }
 
-    private void viewPdf(String file, String directory) {
+    private void viewPdf(File file, String directory) {
 
-        File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA Files"+ file);
-       // String path = ;
+      //  File pdfFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/IDEA PDF"+ file);
+       // String path = ;/IDEA PDF
 
-        Log.d("pdffilelocation","****    "+pdfFile);
+        Log.d("pdffilelocation","****    "+file);
 
-        Uri path = Uri.fromFile(pdfFile);
+        Uri path = Uri.fromFile(file);
 
 
         // Setting the intent for pdf reader
-        /*Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+        Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
         pdfIntent.setDataAndType(path, "application/pdf");
         pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        */
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(pdfFile),"application/vnd.ms-excel");
+       /* Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(pdfFile),"application/vnd.ms-excel");*/
 
 
 
         try {
-            context.startActivity(intent);
+            context.startActivity(pdfIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "Can't read pdf file", Toast.LENGTH_SHORT).show();
         }
@@ -2287,7 +2791,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         try {
             context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, "Can't read pdf file", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Can't excel pdf file", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -35,12 +35,20 @@ public interface IdeaInterface {
                                      @Field("mobile") String user_mobilenumber);
 
 
-        /*Post User Login api below*/
+        /*Post User Login api below for disputors*/
 
     @FormUrlEncoded
     @POST("api/auth/login_process")
     Call<ResponseBody> post_Login(@Field("scd_code") String zone_id,
                                      @Field("password") String user_id,
+                                  @Field("role_type") String user_roll);
+
+    /*Post User Login api below for only ASM TSM ZSM*/
+
+    @FormUrlEncoded
+    @POST("api/auth/login_process")
+    Call<ResponseBody> post_LoginManagers(@Field("mobile") String zone_id,
+                                  @Field("password") String user_id,
                                   @Field("role_type") String user_roll);
 
 
@@ -90,9 +98,8 @@ public interface IdeaInterface {
     /*/api/reportApp/get_tsm_data*/
 
     @FormUrlEncoded
-    @POST("api/reportApp/get_tsm_data")
+    @POST("api/reportApp/get_report_data")
     Call<ResponseBody> get_ReportDate(@Field("auth_key") String auth_key,
-                                      @Field("role_type") String role_type,
                                       @Field("file_id") String file_id);
 
     @FormUrlEncoded
@@ -108,6 +115,7 @@ public interface IdeaInterface {
 
 
     /*Below api for types fo Reports */
+  /*api/reportApp/get_file_name*/
 
     @FormUrlEncoded
     @POST("api/reportApp/get_file_name")
