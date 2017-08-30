@@ -127,6 +127,10 @@ public interface IdeaInterface {
                                         @Field("subject") String subject,
                                         @Field("feedback_msg") String feedbackmsg);
 
+    @FormUrlEncoded
+    @POST("api/feedbackApp/get_feedback_data")
+    Call<ResponseBody> get_feedback(@Field("auth_key") String auth_key);
+
 
 
 

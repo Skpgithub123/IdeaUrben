@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_200">
+
+
+    <TextView
+        android:id="@+id/subject_by"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#fff"
+        android:gravity="left|top"
+        android:textSize="18sp"
+        android:text=""
+        android:padding="15dp"
+        android:textColor="#000" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:background="#fff"
+        android:textSize="18sp"
+        android:id="@+id/message_by"
+        android:gravity="left|top"
+        android:padding="15dp"
+        android:text=""
+        android:textColor="@color/black"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:background="#fff"
+        android:id="@+id/replymessage_by"
+        android:gravity="left|top"
+        android:textSize="18sp"
+        android:padding="15dp"
+        android:text=""
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/reply_by"
+        android:background="#fff"
+        android:gravity="left|top"
+        android:padding="15dp"
+        android:textSize="18sp"
+        android:text=""
+        android:textColor="@color/black"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/txt_mailsentdate"
+        android:maxLines="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text=""
+        android:background="@color/white"
+        android:inputType="text"
+        android:gravity="center_horizontal|center_vertical|left"
+        android:textColor="@color/minecraft_button_background_pressed"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/txt_mailreceiveddate"
+        android:maxLines="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text=""
+        android:background="@color/white"
+        android:inputType="text"
+        android:gravity="center_horizontal|center_vertical|left"
+        android:textColor="@color/minecraft_button_background_pressed"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="18dp"
+            android:background="@color/black"/>
+
+
+
+
+</LinearLayout>

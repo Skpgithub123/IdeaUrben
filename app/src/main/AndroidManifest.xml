@@ -46,6 +46,7 @@
         <activity android:name=".Activity.Forgot_Email" />
         <activity android:name=".Activity.ReportCategories_list"></activity>
         <activity android:name=".Activity.ShowImageWebview"></activity>
+        <activity android:name=".Activity.ViewRepliesActivity"></activity>
     </application>
 
 </manifest>
